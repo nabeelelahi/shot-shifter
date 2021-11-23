@@ -14,11 +14,6 @@ use App\Http\Controllers\Api\FaqController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-Route::get('get-csrf-token',function(){
-    echo csrf_token();
-});
-
 Route::middleware(['api_authorization'])->group(function(){
 
     Route::post('user/login',[UserController::class,'login']);

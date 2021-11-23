@@ -74,6 +74,9 @@ class UserHook
         }
 
         //set data
+        if( !empty($postdata['image_url']) ){
+            $postdata['image_url'] = CustomHelper::uploadMedia('users',$postdata['image_url']);
+        }
         $postdata['user_group_id'] = 1;
         $postdata['username']   = $this->_model::generateUniqueUserName($postdata['name']);
         $postdata['slug']       = $postdata['username'];

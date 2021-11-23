@@ -40,17 +40,18 @@ class UserController extends RestController
                 $validator = Validator::make($this->__request->all(), [
                     'name'          => ['required','min:3','max:50','regex:/^([A-Za-z0-9\s])+$/'],
                     'email'         => ['required', 'email',
-                        Rule::unique('users')->where('is_email_verify',1)->whereNull('deleted_at')
+                        Rule::unique('users')->whereNull('deleted_at')
                     ],
                     'mobile_no'     => [
                         'required',
                         Rule::unique('users')->whereNull('deleted_at'),
                         'regex:/^(\+?\d{1,3}[-])\d{9,11}$/'
                     ],
+                    'image_url'     => 'required|image|max:10240',
                     'password'      => ['required','regex:/^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z]).{8,150}$/'],
                     'confirm_password' => 'required|same:password',
-                    'device_type'  => 'required|in:web,android,ios',
-                    'device_token' => 'required',
+                    'device_type'  => 'in:web,android,ios',
+                    'device_token' => 'string',
                 ],$custom_messages);
                 break;
             case 'PUT':
@@ -61,7 +62,7 @@ class UserController extends RestController
                 $validator = Validator::make($this->__request->all(), [
                     'slug'      => 'exists:users,slug,deleted_at,NULL,id,' . $this->__request['user']->id,
                     'name'      => ['min:3','max:50','regex:/^([A-Za-z0-9\s])+$/'],
-                    'image_url' => 'image',
+                    'image_url' => 'image|max:10240',
                     'country'   => 'min:3|max:50',
                     'state'     => 'min:3|max:50',
                     'city'      => 'min:3|max:50',
@@ -248,8 +249,8 @@ class UserController extends RestController
         $request = $this->__request;
         $param_rule['email']        = 'required|email';
         $param_rule['password']     = 'required';
-        $param_rule['device_type']  = 'required|in:android,ios,web';
-        $param_rule['device_token'] = 'required';
+        $param_rule['device_type']  = 'in:android,ios,web';
+        $param_rule['device_token'] = 'string';
 
         $response = $this->__validateRequestParams($request->all(),$param_rule);
         if( $this->__is_error )

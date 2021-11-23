@@ -34,7 +34,10 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'user_group_id', 'name', 'username', 'slug', 'email', 'mobile_no', 'password', 'image_url', 'status', 'is_email_verify', 'email_verify_at', 'is_mobile_verify', 'mobile_verify_at', 'country', 'city', 'state', 'zipcode', 'address', 'latitude', 'longitude', 'online_status','mobile_otp', 'email_otp', 'remember_token', 'created_at', 'updated_at', 'deleted_at'
+        'user_group_id', 'name', 'username', 'slug', 'email', 'mobile_no', 'password', 'image_url', 'status',
+        'is_email_verify', 'email_verify_at', 'is_mobile_verify', 'mobile_verify_at', 'country', 'city', 'state',
+        'zipcode', 'address', 'latitude', 'longitude', 'online_status','mobile_otp', 'email_otp', 'notification_setting',
+        'remember_token', 'created_at', 'updated_at', 'deleted_at'
     ];
 
     /**
