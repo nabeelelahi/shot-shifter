@@ -1,0 +1,33 @@
+{
+    "name": "retrocube/post",
+    "description": "Social Networking Post",
+    "license": "MIT",
+    "require": {
+        "php": "^7.4|^8.0",
+        "illuminate/contracts": "^8.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^6.0",
+        "phpunit/phpunit": "^9.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Retrocube\\Post\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Retrocube\\Post\\Tests\\": "tests"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Retrocube\\Post\\Providers\\PostServiceProvider"
+            ]
+        }
+    }
+}
