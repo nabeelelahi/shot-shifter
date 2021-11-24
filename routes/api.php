@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\FaqController;
+use App\Http\Controllers\Api\ShotListController;
+use App\Http\Controllers\Api\SceneController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -28,6 +30,9 @@ Route::middleware(['api_authorization'])->group(function(){
     Route::resource('faq',FaqController::class)->only('index');
 
     Route::middleware(['custom_auth:api'])->group(function(){
+
+        Route::resource('shot-list',ShotListController::class);
+        Route::resource('scene', SceneController::class);
 
         Route::get('notification',[NotificationController::class,'index']);
         Route::put('notification/{any}',[NotificationController::class,'update']);
