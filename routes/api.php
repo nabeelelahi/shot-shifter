@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\ShotListController;
 use App\Http\Controllers\Api\SceneController;
 use App\Http\Controllers\Api\BreaksController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Api\UserMemberShotListController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -37,6 +38,7 @@ Route::middleware(['api_authorization'])->group(function(){
         Route::post('scene/complete',[SceneController::class, 'sceneComplete']);
         Route::resource('scene', SceneController::class);
         Route::resource('break', BreaksController::class)->only(['store','destroy']);
+        Route::resource('member',UserMemberShotListController::class);
 
         Route::get('notification',[NotificationController::class,'index']);
         Route::put('notification/{any}',[NotificationController::class,'update']);
