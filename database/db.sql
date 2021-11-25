@@ -521,27 +521,6 @@ CREATE TABLE `user_api_token` (
 
 /*Data for the table `user_api_token` */
 
-/*Table structure for table `user_follow` */
-
-CREATE TABLE `user_follow` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `actor_id` bigint(20) unsigned NOT NULL,
-  `target_id` bigint(20) unsigned NOT NULL,
-  `slug` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `status` enum('0','1') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  `deleted_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `user_follow_slug_unique` (`slug`),
-  KEY `user_follow_target_id_foreign` (`target_id`),
-  KEY `user_follow_actor_id_target_id_slug_status_index` (`actor_id`,`target_id`,`slug`,`status`),
-  CONSTRAINT `user_follow_actor_id_foreign` FOREIGN KEY (`actor_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `user_follow_target_id_foreign` FOREIGN KEY (`target_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-/*Data for the table `user_follow` */
-
 /*Table structure for table `user_groups` */
 
 CREATE TABLE `user_groups` (
