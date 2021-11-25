@@ -29,12 +29,21 @@ class BreaksController extends RestController
         switch ($action){
             case 'POST':
                 $validator = Validator::make($this->__request->all(), [
-                    'attribute'        => 'required',
+                    'name'     => 'required',
+                    'scene_id' => 'required',
                 ]);
                 break;
             case 'PUT':
                 $validator = Validator::make($this->__request->all(), [
-                    'attribute'     => 'required',
+                    'name'     => 'required',
+                    'scene_id' => 'required',
+                ]);
+                break;
+            case 'DELETE':
+                $validator = Validator::make($this->__request->all(), [
+                    'slug' => [
+                        Rule::exists('breaks')->where('slug',$slug)->where('user_id',$this->__request['user']->id)
+                    ],
                 ]);
                 break;
         }

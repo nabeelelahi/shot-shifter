@@ -62,4 +62,27 @@ class Scene extends Model
         return $this->belongsTo(ShotList::class,'shot_list_id','id');
     }
 
+    public function breaks()
+    {
+        return $this->hasMany(Breaks::class,'scene_id','id');
+    }
+
+    public static function markAsComplete($params)
+    {
+        self::where('id',$params['scene_id'])
+            ->update([
+                'is_complete' => 1
+            ]);
+        // update complete counter
+        \DB::table('shot_list')
+            ->where('id',$params['shot_list_id'])
+            ->increment('total_completed_scene',1);
+        //get updated scene
+        $getScene = self::with(['shotList','breaks'])
+                        ->select('scenes.*')
+                        ->where('id',$params['scene_id'])
+                        ->first();
+
+        return $getScene;
+    }
 }

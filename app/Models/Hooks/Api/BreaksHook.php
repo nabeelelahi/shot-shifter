@@ -2,6 +2,8 @@
 
 namespace App\Models\Hooks\Api;
 
+use Carbon\Carbon;
+
 class BreaksHook
 {
     private $_model;
@@ -32,7 +34,9 @@ class BreaksHook
     */
     public function hook_before_add($request,&$postdata)
     {
-
+        $postdata['user_id']    = $request['user']->id;
+        $postdata['slug']       = time() . uniqid();
+        $postdata['created_at'] = Carbon::now();
     }
 
     /*
@@ -58,7 +62,7 @@ class BreaksHook
     */
     public function hook_before_edit($request, $slug, &$postData)
     {
-
+        $postData['updated_at'] = Carbon::now();
     }
 
     /*

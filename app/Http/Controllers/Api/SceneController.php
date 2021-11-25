@@ -6,6 +6,8 @@ use Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use App\Http\Controllers\RestController;
+use App\Models\Scene;
+use App\Models\ShotList;
 
 class SceneController extends RestController
 {
@@ -29,7 +31,7 @@ class SceneController extends RestController
         switch ($action){
             case 'POST':
                 $validator = Validator::make($this->__request->all(), [
-                    'shot_list_id' => 'required|exists:shot_list,id',
+                    'shot_list_id' => 'required',
                     'image_url'    => 'image|max:10240',
                 ]);
                 break;
@@ -65,7 +67,16 @@ class SceneController extends RestController
      */
     public function beforeStoreLoadModel($request)
     {
-
+        $checkShotList = ShotList::getShotListByID($request['shot_list_id']);
+        if( !isset($checkShotList->id) ){
+            $this->__is_error = true;
+            return $this->__sendError('Validation Message',[ 'message' => 'Shot list id is not valid' ],400);
+        }
+        if( $checkShotList->is_lock ){
+            $this->__is_error = true;
+            $message = 'You are not be able to add a scene because shot list has been locked';
+            return $this->__sendError('Validation Message',[ 'message' => $message ],400);
+        }
     }
 
     /**
@@ -101,7 +112,16 @@ class SceneController extends RestController
      */
     public function beforeUpdateLoadModel($request,$slug)
     {
-
+        $checkShotList = ShotList::getShotListByID($request['shot_list_id']);
+        if( !isset($checkShotList->id) ){
+            $this->__is_error = true;
+            return $this->__sendError('Validation Message',[ 'message' => 'Shot list id is not valid' ],400);
+        }
+        if( $checkShotList->is_lock ){
+            $this->__is_error = true;
+            $message = 'You are not be able to add a scene because shot list has been locked';
+            return $this->__sendError('Validation Message',[ 'message' => $message ],400);
+        }
     }
 
     /**
@@ -129,5 +149,22 @@ class SceneController extends RestController
     public function afterDestroyLoadModel($request,$slug)
     {
 
+    }
+
+    public function sceneComplete()
+    {
+        $request = $this->__request;
+        $param_rule['scene_id'] = 'required|exists:scenes,id,is_complete,0';
+
+        $response = $this->__validateRequestParams($request->all(),$param_rule);
+        if( $this->__is_error )
+            return $response;
+
+        $record = Scene::markAsComplete($request->all());
+
+        $this->__is_collection = false;
+        $this->__is_paginate   = false;
+
+        return $this->__sendResponse($record,200,__('app.success_listing_message'));
     }
 }

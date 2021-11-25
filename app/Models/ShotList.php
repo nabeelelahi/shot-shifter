@@ -61,4 +61,8 @@ class ShotList extends Model
                     ->select('id','name','slug','image_url');
     }
 
+    public static function getShotListByID($id)
+    {
+        return self::where('id',$id)->first();
+    }
 }

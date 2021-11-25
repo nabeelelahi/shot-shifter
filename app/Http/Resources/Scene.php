@@ -41,7 +41,8 @@ class Scene extends JsonResource
            'is_complete' => $this->is_complete,
            'sort_order'  => $this->sort_order,
            'created_at'  => $this->created_at,
-           'shot_list'   => $this->whenLoaded('shotList'),
+           'shot_list'   => new ShotList($this->whenLoaded('shotList')),
+           'breaks'      => $this->whenLoaded('breaks'),
        ];
     }
 }

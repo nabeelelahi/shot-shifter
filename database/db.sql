@@ -34,6 +34,28 @@ insert  into `application_setting`(`id`,`identifier`,`meta_key`,`value`,`is_file
 (2,'application_setting','logo','images/favicon.png',1,'2021-11-23 12:47:44',NULL,NULL),
 (3,'application_setting','application_name','Shot Shifter',0,'2021-11-23 12:47:44',NULL,NULL);
 
+/*Table structure for table `breaks` */
+
+CREATE TABLE `breaks` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `scene_id` bigint(20) unsigned NOT NULL,
+  `name` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status` enum('1','0') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `breaks_slug_unique` (`slug`),
+  KEY `breaks_user_id_foreign` (`user_id`),
+  KEY `breaks_scene_id_foreign` (`scene_id`),
+  CONSTRAINT `breaks_scene_id_foreign` FOREIGN KEY (`scene_id`) REFERENCES `scenes` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `breaks_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+/*Data for the table `breaks` */
+
 /*Table structure for table `cms_module_permissions` */
 
 CREATE TABLE `cms_module_permissions` (
@@ -327,7 +349,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /*Data for the table `migrations` */
 
@@ -360,7 +382,12 @@ insert  into `migrations`(`id`,`migration`,`batch`) values
 (26,'2021_10_12_164452_post_comments',1),
 (27,'2021_10_12_164953_post_share',1),
 (28,'2021_10_12_165719_post_report',1),
-(29,'2021_10_13_165453_feeling_activity',1);
+(29,'2021_10_13_165453_feeling_activity',1),
+(30,'2021_11_24_081654_create_shot_list_table',2),
+(31,'2021_11_24_081858_create_scenes_table',2),
+(32,'2021_11_24_081933_create_breaks_table',2),
+(33,'2021_11_24_081958_create_user_share_table',2),
+(34,'2021_11_24_082347_create_user_member_table',2);
 
 /*Table structure for table `notification` */
 
@@ -591,6 +618,85 @@ CREATE TABLE `reset_password` (
 insert  into `reset_password`(`id`,`module`,`email`,`token`,`created_at`,`updated_at`,`deleted_at`) values 
 (1,'users','ali.raza5@yopmail.org','DKPY4nNYH8hxDFLaqLkAr10uedfm2G8KU9cI7VDG7spGQSyzPpC9PvFkMrxjBG2Yu5w66kcpoNypOvfoTS5IlDgnP2iZ9RSb2A9XM37E4XsJiUztATNdrLveJtnwMN7gIgeBDxIXYfTlswtLFzLd3w','2021-11-23 13:09:10',NULL,NULL);
 
+/*Table structure for table `scenes` */
+
+CREATE TABLE `scenes` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `shot_list_id` bigint(20) unsigned NOT NULL,
+  `size` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `title` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `slug` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `image_url` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `angle` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `lens` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `internal_external` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `sun_time` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `location` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `location_pin` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `cast` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `wardrobe` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `props` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `action` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `speed` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `sound` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `timepicker` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `lines_dialogue_english` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `lines_dialogue_foreign` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `camera` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `is_complete` enum('1','0') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
+  `sort_order` int(11) DEFAULT NULL,
+  `status` enum('1','0') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `scenes_slug_unique` (`slug`),
+  KEY `scenes_shot_list_id_foreign` (`shot_list_id`),
+  CONSTRAINT `scenes_shot_list_id_foreign` FOREIGN KEY (`shot_list_id`) REFERENCES `shot_list` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+/*Data for the table `scenes` */
+
+insert  into `scenes`(`id`,`shot_list_id`,`size`,`title`,`slug`,`image_url`,`description`,`angle`,`lens`,`internal_external`,`sun_time`,`location`,`location_pin`,`cast`,`wardrobe`,`props`,`action`,`speed`,`sound`,`timepicker`,`lines_dialogue_english`,`lines_dialogue_foreign`,`camera`,`is_complete`,`sort_order`,`status`,`created_at`,`updated_at`,`deleted_at`) values 
+(1,1,'size','title','1637758604619e368c127a4','scene/3xbguOfazbFWPMCLxXLmS5dx7v2q2IQaNnxLkq9M.jpg','test description','test angle','test lens','internel externel','sun time','location','location pin','cast','wardrobe','props','action','speed','sound','timepicker','lines_dialogue_english','lines_dialogue_foreign','camera','0',NULL,'1','2021-11-24 12:56:44','2021-11-24 12:56:44',NULL),
+(2,1,'size','title','1637758991619e380f1fac8','scene/X0kOIToDuWcDHQAaZaRVemzGtjDfhx8ncAsAGj7R.jpg','test description','test angle','test lens','internel externel','sun time','location','location pin','cast','wardrobe','props','action','speed','sound','timepicker','lines_dialogue_english','lines_dialogue_foreign','camera','0',NULL,'1','2021-11-24 13:03:11','2021-11-24 13:55:09','2021-11-24 13:55:09'),
+(3,1,'size','title','1637761908619e43746a5d0','scene/zpxQyZ4PkrldIzfbadBvAVrEOgty7k568ac1IzUz.jpg','test description','test angle','test lens','internel externel','sun time','location','location pin','cast','wardrobe','props','action','speed','sound','timepicker','lines_dialogue_english','lines_dialogue_foreign','camera','0',NULL,'1','2021-11-24 13:51:48','2021-11-24 13:51:48',NULL),
+(4,1,'size','title','1637761927619e4387aa167','scene/2N3oITjoHytiZhXTviVnClMt14AHfl04EQo3GCbh.jpg','test description','test angle','test lens','internel externel','sun time','location','location pin','cast','wardrobe','props','action','speed','sound','timepicker','lines_dialogue_english','lines_dialogue_foreign','camera','0',NULL,'1','2021-11-24 13:52:07','2021-11-24 13:52:07',NULL),
+(5,1,'size','title','1637763513619e49b9b4936','scene/07joe28O6yCnih1wvq4Kw6sJkOtSr2wHVwX7hL8s.jpg','test description','test angle','test lens','internel externel','sun time','location','location pin','cast','wardrobe','props','action','speed','sound','timepicker','lines_dialogue_english','lines_dialogue_foreign','camera','0',NULL,'1','2021-11-24 14:18:33','2021-11-24 14:18:33',NULL);
+
+/*Table structure for table `shot_list` */
+
+CREATE TABLE `shot_list` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `name` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `slug` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `image_url` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `is_lock` enum('0','1') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
+  `is_pin` enum('0','1') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
+  `sort_order` int(11) DEFAULT NULL,
+  `status` enum('1','0') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '1',
+  `total_scene` int(11) NOT NULL DEFAULT 0,
+  `total_completed_scene` int(11) NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `shot_list_slug_unique` (`slug`),
+  KEY `shot_list_user_id_foreign` (`user_id`),
+  CONSTRAINT `shot_list_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+/*Data for the table `shot_list` */
+
+insert  into `shot_list`(`id`,`user_id`,`name`,`slug`,`image_url`,`description`,`is_lock`,`is_pin`,`sort_order`,`status`,`total_scene`,`total_completed_scene`,`created_at`,`updated_at`,`deleted_at`) values 
+(1,4,'test','1637750432619e16a047715','shot_list/OYpfQRXuMai1cLVAXPo4PyIuRuFDGYCvplKqwRHm.jpg','Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.','0','0',NULL,'1',1,0,'2021-11-24 10:40:32','2021-11-24 10:40:32',NULL),
+(2,4,'test','1637750802619e1812c2b64','shot_list/RbpdYFoT5oOvU2xZX02HPgIPBumdMrzPPwptpEVa.jpg','Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.','0','0',NULL,'1',0,0,'2021-11-24 10:46:42','2021-11-24 10:46:42',NULL),
+(3,4,'testssss','1637750840619e183858728','shot_list/saXwDWzy1vzr5mx7lS12pydtSzPgQQarfQZAPeep.jpg','Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book','0','0',NULL,'1',0,0,'2021-11-24 10:47:20','2021-11-24 12:34:03','2021-11-24 12:34:03'),
+(4,4,'test','1637763473619e4991bbd5f','shot_list/kfqLmz34Ou1BamSrt8hRNuTPsHsR7HUeW0KzdmdF.jpg','Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.','0','0',NULL,'1',0,0,'2021-11-24 14:17:53','2021-11-24 14:17:53',NULL);
+
 /*Table structure for table `user_api_token` */
 
 CREATE TABLE `user_api_token` (
@@ -614,9 +720,12 @@ CREATE TABLE `user_api_token` (
   KEY `user_api_token_user_id_foreign` (`user_id`),
   KEY `user_api_token_api_token_index` (`api_token`),
   CONSTRAINT `user_api_token_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /*Data for the table `user_api_token` */
+
+insert  into `user_api_token`(`id`,`user_id`,`api_token`,`refresh_token`,`udid`,`device_type`,`device_token`,`platform_type`,`platform_id`,`ip_address`,`user_agent`,`created_at`,`updated_at`,`deleted_at`) values 
+(5,4,'51ba8566485f7992cb64885186643b9d944a1bceb95eaddd97ad1b2ce241060f','94fdba6983f91d06bc43020ea5e7f8cde67a6be63d17c8ee531f559447bb85ff','api.Pd*!(5675','android','1234567890','custom',NULL,'127.0.0.1','PostmanRuntime/7.26.8','2021-11-24 10:26:05',NULL,NULL);
 
 /*Table structure for table `user_follow` */
 
@@ -657,6 +766,45 @@ CREATE TABLE `user_groups` (
 insert  into `user_groups`(`id`,`title`,`slug`,`status`,`created_at`,`updated_at`,`deleted_at`) values 
 (1,'App User','app-user','1','2021-11-23 12:47:44',NULL,NULL);
 
+/*Table structure for table `user_member` */
+
+CREATE TABLE `user_member` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `actor_id` bigint(20) unsigned NOT NULL,
+  `target_id` bigint(20) unsigned NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_member_actor_id_foreign` (`actor_id`),
+  KEY `user_member_target_id_foreign` (`target_id`),
+  CONSTRAINT `user_member_actor_id_foreign` FOREIGN KEY (`actor_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `user_member_target_id_foreign` FOREIGN KEY (`target_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+/*Data for the table `user_member` */
+
+/*Table structure for table `user_share` */
+
+CREATE TABLE `user_share` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `actor_id` bigint(20) unsigned NOT NULL,
+  `target_id` bigint(20) unsigned NOT NULL,
+  `shot_list_id` bigint(20) unsigned NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_share_actor_id_foreign` (`actor_id`),
+  KEY `user_share_target_id_foreign` (`target_id`),
+  KEY `user_share_shot_list_id_foreign` (`shot_list_id`),
+  CONSTRAINT `user_share_actor_id_foreign` FOREIGN KEY (`actor_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `user_share_shot_list_id_foreign` FOREIGN KEY (`shot_list_id`) REFERENCES `shot_list` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `user_share_target_id_foreign` FOREIGN KEY (`target_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+/*Data for the table `user_share` */
+
 /*Table structure for table `users` */
 
 CREATE TABLE `users` (
@@ -696,9 +844,12 @@ CREATE TABLE `users` (
   UNIQUE KEY `users_mobile_no_unique` (`mobile_no`),
   KEY `index1` (`user_group_id`,`slug`,`email`,`mobile_no`,`is_email_verify`,`status`),
   CONSTRAINT `users_user_group_id_foreign` FOREIGN KEY (`user_group_id`) REFERENCES `user_groups` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /*Data for the table `users` */
+
+insert  into `users`(`id`,`user_group_id`,`name`,`username`,`slug`,`email`,`mobile_no`,`password`,`image_url`,`status`,`is_email_verify`,`email_verify_at`,`is_mobile_verify`,`mobile_verify_at`,`country`,`city`,`state`,`zipcode`,`address`,`latitude`,`longitude`,`online_status`,`mobile_otp`,`email_otp`,`notification_setting`,`remember_token`,`created_at`,`updated_at`,`deleted_at`) values 
+(4,1,'Ali Raza','ali-raza','ali-raza','ali.raza5@abtach.org','92-111222335','$2y$10$NLK5E9fNwRToYHpqTHkY1u1zPxZauGUDlc.AU3TWTtmT1y5GzNMEa','users/AEN85nEUnhymaVqXGpm2U5Z4h9ZweohWG9QXxWiJ.jpg','1','0',NULL,'0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,'0',NULL,'2021-11-24 10:26:05','2021-11-24 10:26:05',NULL);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;

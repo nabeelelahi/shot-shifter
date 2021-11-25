@@ -32,6 +32,7 @@ class ShotListController extends RestController
                     'name'        => 'required|min:2|max:50',
                     'image_url'   => 'required|image|max:10240',
                     'description' => 'required|min:2|max:1000',
+                    'is_lock'     => 'in:1,0',
                 ]);
                 break;
             case 'PUT':
@@ -39,6 +40,7 @@ class ShotListController extends RestController
                     'name'        => 'min:2|max:50',
                     'image_url'   => 'image|max:10240',
                     'description' => 'min:2|max:1000',
+                    'is_lock'     => 'in:1,0',
                 ]);
                 break;
             case 'DELETE':
