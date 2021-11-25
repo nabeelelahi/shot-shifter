@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\FaqController;
 use App\Http\Controllers\Api\ShotListController;
 use App\Http\Controllers\Api\SceneController;
 use App\Http\Controllers\Api\BreaksController;
+use App\Http\Controllers\HomeController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -44,4 +45,6 @@ Route::middleware(['api_authorization'])->group(function(){
         Route::get('notification/setting',[NotificationController::class,'getNotificationSetting']);
 
     });
+
+    Route::post('truncate-data',[HomeController::class, 'truncateData']);
 });
