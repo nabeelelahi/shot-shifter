@@ -24,7 +24,7 @@ class ShotListHook
    */
     public function hook_query_index(&$query,$request, $slug=NULL)
     {
-        $query->with('user');
+        $query->with(['user','member']);
         $query->select('shot_list.*');
 
         if( $slug != NULL )

@@ -14,6 +14,14 @@ class UserMemberShotList extends JsonResource
      */
     public function toArray($request)
     {
-       return parent::toArray($request);
+       return [
+           'id'         => $this->id,
+           'actor_id'   => $this->actor_id,
+           'target_id'  => $this->target_id,
+           'created_at' => $this->created_at,
+           'actor'      => new PublicUser($this->whenLoaded('actor')),
+           'target'     => new PublicUser($this->whenLoaded('target')),
+           'shot_list'  => new ShotList($this->whenLoaded('shotList')),
+       ];
     }
 }

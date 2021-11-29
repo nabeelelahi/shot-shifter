@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\SceneController;
 use App\Http\Controllers\Api\BreaksController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Api\UserMemberShotListController;
+use App\Http\Controllers\Api\UserMemberController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -28,7 +29,7 @@ Route::middleware(['api_authorization'])->group(function(){
     Route::post('user/social-login',[UserController::class,'socialLogin']);
     Route::post('user/verify-code',[UserController::class,'verifyCode']);
     Route::post('user/resend-code',[UserController::class,'resendCode']);
-    Route::resource('user',UserController::class)->except(['delete']);
+    Route::resource('user',UserController::class)->except(['destroy']);
 
     Route::resource('faq',FaqController::class)->only('index');
 
@@ -38,7 +39,8 @@ Route::middleware(['api_authorization'])->group(function(){
         Route::post('scene/complete',[SceneController::class, 'sceneComplete']);
         Route::resource('scene', SceneController::class);
         Route::resource('break', BreaksController::class)->only(['store','destroy']);
-        Route::resource('member',UserMemberShotListController::class);
+        Route::resource('member',UserMemberShotListController::class)->only(['index','store','destroy']);
+        Route::resource('team', UserMemberController::class)->only(['index','store']);
 
         Route::get('notification',[NotificationController::class,'index']);
         Route::put('notification/{any}',[NotificationController::class,'update']);

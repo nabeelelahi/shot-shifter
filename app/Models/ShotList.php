@@ -61,6 +61,15 @@ class ShotList extends Model
                     ->select('id','name','slug','image_url');
     }
 
+    public function member()
+    {
+        return $this->hasMany(UserMemberShotList::class,'shot_list_id','id')
+                    ->select('user_member_shotlist.shot_list_id')
+                    ->selectRaw("u.id, u.name, u.slug, u.image_url")
+                    ->join('users AS u','u.id','=','user_member_shotlist.target_id')
+                    ->groupBy('u.id');
+    }
+
     public static function getShotListByID($id)
     {
         return self::where('id',$id)->first();

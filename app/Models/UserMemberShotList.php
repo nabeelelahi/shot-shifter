@@ -28,7 +28,7 @@ class UserMemberShotList extends Model
      * @var array
      */
     protected $fillable = [
-        'shot_list_id', 'actor_id', 'target_id', 'created_at', 'updated_at', 'deleted_at'
+        'shot_list_id', 'actor_id', 'target_id', 'slug', 'created_at', 'updated_at', 'deleted_at'
     ];
 
     /**
@@ -54,4 +54,18 @@ class UserMemberShotList extends Model
      */
     protected $__cache_expire_time = 1; //days
 
+    public function actor()
+    {
+        return $this->belongsTo(User::class,'actor_id','id');
+    }
+
+    public function target()
+    {
+        return $this->belongsTo(User::class,'target_id','id');
+    }
+
+    public function shotList()
+    {
+        return $this->belongsTo(ShotList::class,'shot_list_id','id');
+    }
 }

@@ -2,9 +2,7 @@
 
 namespace App\Models\Hooks\Api;
 
-use Carbon\Carbon;
-
-class UserMemberShotListHook
+class UserMemberHook
 {
     private $_model;
 
@@ -21,13 +19,8 @@ class UserMemberShotListHook
    | @request = laravel http request class
    |
    */
-    public function hook_query_index(&$query,$request, $slug=NULL)
-    {
-        $query->with('actor','target','shotList');
-        if( !empty($request['shot_list_id']) ){
-            $query->where('shot_list_id',$request['shot_list_id']);
-        }
-        $query->where('actor_id',$request['user']->id);
+    public function hook_query_index(&$query,$request, $slug=NULL) {
+        //Your code here
     }
 
     /*
@@ -39,9 +32,7 @@ class UserMemberShotListHook
     */
     public function hook_before_add($request,&$postdata)
     {
-        $postdata['slug']       = uniqid() . time();
-        $postdata['actor_id']   = $request['user']->id;
-        $postdata['created_at'] = Carbon::now();
+
     }
 
     /*
@@ -110,6 +101,6 @@ class UserMemberShotListHook
     public function create_cache_signature($request)
     {
         $cache_params = $request->except(['user','api_token']);
-        return 'UserMemberShotListHook' . md5(implode('',$cache_params));
+        return 'UserMemberHook' . md5(implode('',$cache_params));
     }
 }

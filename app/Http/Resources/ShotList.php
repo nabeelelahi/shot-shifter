@@ -27,6 +27,7 @@ class ShotList extends JsonResource
            'sort_order'  => $this->sort_order,
            'status'      => $this->status,
            'progress'    => $this->total_completed_scene > 0 ? round( ($this->total_completed_scene * 100) / $this->total_scene) : 0,
+           'members'     => PublicUser::collection($this->whenLoaded('member')),
            'created_at'  => $this->created_at,
        ];
     }

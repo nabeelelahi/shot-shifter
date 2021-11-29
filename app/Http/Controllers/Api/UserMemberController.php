@@ -6,15 +6,16 @@ use Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use App\Http\Controllers\RestController;
+use App\Models\UserMember;
 
-class UserMemberShotListController extends RestController
+class UserMemberController extends RestController
 {
 
     public function __construct(Request $request)
     {
-        parent::__construct('UserMemberShotList');
+        parent::__construct('UserMember');
         $this->__request     = $request;
-        $this->__apiResource = 'UserMemberShotList';
+        $this->__apiResource = 'UserMember';
     }
 
     /**
@@ -27,41 +28,16 @@ class UserMemberShotListController extends RestController
     {
         $validator = [];
         switch ($action){
-            case 'INDEX':
-                $validator = Validator::make($this->__request->all(), [
-                    'shot_list_id' => 'required',
-                ]);
-            break;
             case 'POST':
                 $validator = Validator::make($this->__request->all(), [
-                    'shot_list_id' => [
-                        'required',
-                        Rule::exists('shot_list','id')
-                            ->where('user_id',$this->__request['user']->id)
-                            ->whereNull('deleted_at'),
-                    ],
-                    'target_id'     => [
-                        'required',
-                        Rule::exists('users','id')->whereNull('deleted_at'),
-                    ],
+                    'mobile_no.*' => 'required',
                 ]);
                 break;
             case 'PUT':
                 $validator = Validator::make($this->__request->all(), [
-                    'attribute'     => 'required',
+                    'attribute' => 'required',
                 ]);
-            break;
-            case 'DELETE':
-                $this->__request->merge(['slug'=>$slug]);
-                $validator = Validator::make($this->__request->all(), [
-                    'slug' => [
-                        'required',
-                        Rule::exists('user_member_shotlist','slug')
-                            ->where('actor_id',$this->__request['user']->id)
-                            ->whereNull('deleted_at'),
-                    ],
-                ]);
-            break;
+                break;
         }
         return $validator;
     }
@@ -152,5 +128,22 @@ class UserMemberShotListController extends RestController
     public function afterDestroyLoadModel($request,$slug)
     {
 
+    }
+
+    public function store()
+    {
+        $request = $this->__request;
+        $param_rule['mobile_no.*'] = 'required';
+
+        $response = $this->__validateRequestParams($request->all(),$param_rule);
+        if( $this->__is_error )
+            return $response;
+
+        //add members
+        $records = UserMember::addMembers($request->all());
+
+        $this->__apiResource = 'PublicUser';
+        $this->__is_paginate = false;
+        return $this->__sendResponse($records, 200, __('app.success_listing_message'));
     }
 }
