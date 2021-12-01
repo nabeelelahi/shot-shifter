@@ -34,8 +34,8 @@ class ShotListHook
                 $query->where('shot_list.name','like',"$keyword%");
             }
             if( !empty($request['type']) && $request['type'] == 'share'){
-                $query->join('user_share AS us','us.shot_list_id','=','shot_list.id');
-                $query->where('us.target_id',$request['user']->id);
+                $query->join('user_member_shotlist AS ums','ums.shot_list_id','=','shot_list.id');
+                $query->where('ums.target_id',$request['user']->id);
             } else {
                 $query->where('shot_list.user_id',$request['user']->id);
             }
