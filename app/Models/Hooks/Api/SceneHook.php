@@ -25,6 +25,9 @@ class SceneHook
     public function hook_query_index(&$query,$request, $slug=NULL)
     {
         $query->with(['shotList','breaks']);
+
+        if( !empty($request['shot_list_id']) )
+            $query->where('shot_list_id',$request['shot_list_id']);
     }
 
     /*
