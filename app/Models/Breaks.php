@@ -13,7 +13,7 @@ class Breaks extends Model
      *
      * @var string
      */
-    protected $table = 'Breaks';
+    protected $table = 'breaks';
 
     /**
      * The primary key associated with the table.
