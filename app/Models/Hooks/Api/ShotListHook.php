@@ -26,8 +26,7 @@ class ShotListHook
     {
         $query->with(['user','member']);
         $query->select('shot_list.*');
-
-        if( $slug != NULL )
+        if( $slug == NULL )
         {
             if( !empty($request['keyword']) ){
                 $keyword = $request['keyword'];
