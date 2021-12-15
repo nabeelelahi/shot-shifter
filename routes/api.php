@@ -37,6 +37,7 @@ Route::middleware(['api_authorization'])->group(function(){
 
         Route::resource('shot-list',ShotListController::class);
         Route::post('scene/complete',[SceneController::class, 'sceneComplete']);
+        Route::post('scene/reorder',[SceneController::class, 'reOrderRecord']);
         Route::resource('scene', SceneController::class);
         Route::resource('break', BreaksController::class)->only(['store','destroy']);
         Route::resource('member',UserMemberShotListController::class)->only(['index','store','destroy']);

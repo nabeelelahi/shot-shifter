@@ -85,4 +85,37 @@ class Scene extends Model
 
         return $getScene;
     }
+
+    public static function getMaxSortOrder($shot_list_id)
+    {
+        $query = self::selectRaw('IFNULL(MAX(sort_order),0) AS sort_order')
+                    ->where('shot_list_id',$shot_list_id)
+                    ->first();
+        return $query;
+    }
+
+    public static function reOrderRecords($params)
+    {
+        $api_data = [];
+        $records = self::where('id', '>=',$params['scene_id'])
+                        ->where('sort_order','<=',$params['new_sort_order'])
+                        ->get();
+        if( count($records) ){
+           foreach( $records as $record ){
+                $sort_order = $record->id == $params['scene_id'] ? $params['new_sort_order'] : ($record->sort_order - 1);
+                $cases[]  = "WHEN {$record->id} then ?";
+                $data[]   = $sort_order;
+                $ids[]    = $record->id;
+                $record->sort_order = $sort_order;
+                $api_data[] = $record;
+            }
+            $ids = implode(',', $ids);
+            $cases = implode(' ', $cases);
+           \DB::update("UPDATE scenes SET `sort_order` = CASE `id` {$cases} END WHERE `id` in ({$ids})", $data);
+        }
+        usort($api_data, function($a, $b) {
+            return $a['sort_order'] - $b['sort_order'];
+        });
+        return $api_data;
+    }
 }

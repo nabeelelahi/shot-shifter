@@ -167,4 +167,22 @@ class SceneController extends RestController
 
         return $this->__sendResponse($record,200,__('app.success_listing_message'));
     }
+
+    public function reOrderRecord()
+    {
+        $request = $this->__request;
+        $param_rule['shot_list_id']   = 'required|numeric';
+        $param_rule['scene_id']       = 'required|numeric';
+        $param_rule['old_sort_order'] = 'required|numeric';
+        $param_rule['new_sort_order'] = 'required|numeric';
+
+        $response = $this->__validateRequestParams($request->all(),$param_rule);
+        if( $this->__is_error )
+            return $response;
+
+        $records = Scene::reOrderRecords($request->all());
+
+        $this->__is_paginate   = false;
+        return $this->__sendResponse($records,200,__('app.success_listing_message'));
+    }
 }
