@@ -101,7 +101,8 @@ class Scene extends Model
         $subtract_index   = $params['old_sort_order'] > $params['new_sort_order'] ? true : false;
         $max_index        = $params['old_sort_order'] > $params['new_sort_order'] ? $params['old_sort_order'] : $params['new_sort_order'];
 
-        $records = self::where('shot_list_id',$params['shot_list_id'])
+        $records = self::with(['shotList','breaks'])
+                        ->where('shot_list_id',$params['shot_list_id'])
                         ->whereBetween('sort_order',[$sort_order_index,$max_index])
                         ->orderBy('sort_order','asc')
                         ->get();
