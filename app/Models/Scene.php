@@ -97,25 +97,36 @@ class Scene extends Model
     public static function reOrderRecords($params)
     {
         $api_data = [];
-        $records = self::where('id', '>=',$params['scene_id'])
-                        ->where('sort_order','<=',$params['new_sort_order'])
+        $sort_order_index = $params['old_sort_order'] > $params['new_sort_order'] ? $params['new_sort_order'] : $params['old_sort_order'];
+        $subtract_index   = $params['old_sort_order'] > $params['new_sort_order'] ? true : false;
+        $max_index        = $params['old_sort_order'] > $params['new_sort_order'] ? $params['old_sort_order'] : $params['new_sort_order'];
+
+        $records = self::where('shot_list_id',$params['shot_list_id'])
+                        ->whereBetween('sort_order',[$sort_order_index,$max_index])
+                        ->orderBy('sort_order','asc')
                         ->get();
-        if( count($records) ){
+
+         if( count($records) ){
            foreach( $records as $record ){
-                $sort_order = $record->id == $params['scene_id'] ? $params['new_sort_order'] : ($record->sort_order - 1);
+                if( $record->id == $params['scene_id'] ){
+                    $sort_order = $params['new_sort_order'];
+                } else {
+                    $sort_order = $subtract_index ? ($record->sort_order + 1) : ($record->sort_order - 1);
+                }
                 $cases[]  = "WHEN {$record->id} then ?";
                 $data[]   = $sort_order;
                 $ids[]    = $record->id;
                 $record->sort_order = $sort_order;
                 $api_data[] = $record;
+
+                $sort_order_index++;
             }
             $ids = implode(',', $ids);
             $cases = implode(' ', $cases);
            \DB::update("UPDATE scenes SET `sort_order` = CASE `id` {$cases} END WHERE `id` in ({$ids})", $data);
         }
-        usort($api_data, function($a, $b) {
-            return $a['sort_order'] - $b['sort_order'];
-        });
-        return $api_data;
+        $sorted = collect($api_data)->sortBy('sort_order');
+
+        return $sorted;
     }
 }
