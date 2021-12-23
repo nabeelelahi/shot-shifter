@@ -35,6 +35,7 @@ class Scene extends JsonResource
            'speed'                  => $this->speed,
            'sound'                  => $this->sound,
            'timepicker'             => $this->timepicker,
+           'grip'                   => $this->grip,
            'lines_dialogue_english' => $this->lines_dialogue_english,
            'lines_dialogue_foreign' => $this->lines_dialogue_foreign,
            'camera'      => $this->camera,
