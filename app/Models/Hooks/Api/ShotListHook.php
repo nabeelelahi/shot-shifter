@@ -30,7 +30,10 @@ class ShotListHook
         {
             if( !empty($request['keyword']) ){
                 $keyword = $request['keyword'];
-                $query->where('shot_list.name','like',"$keyword%");
+                $query->where(function($where) use ($keyword){
+                    $where->orWhere('shot_list.name','like',"%$keyword%");
+                    $where->orWhere('shot_list.description','like',"%$keyword%");
+                });
             }
             if( !empty($request['type']) && $request['type'] == 'share'){
                 $query->join('user_member_shotlist AS ums','ums.shot_list_id','=','shot_list.id');
