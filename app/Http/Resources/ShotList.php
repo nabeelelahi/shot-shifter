@@ -15,6 +15,12 @@ class ShotList extends JsonResource
      */
     public function toArray($request)
     {
+       if( $this->total_scene == 0 ){
+         $progress = 0;
+       } else {
+         $progress = $this->total_completed_scene > 0 ? round( ($this->total_completed_scene * 100) / $this->total_scene) : 0;
+       }    
+      
        return [
            'id'          => $this->id,
            'user_id'     => new PublicUser($this->whenLoaded('user')),
@@ -26,7 +32,7 @@ class ShotList extends JsonResource
            'is_pin'      => $this->is_pin,
            'sort_order'  => $this->sort_order,
            'status'      => $this->status,
-           'progress'    => $this->total_completed_scene > 0 ? round( ($this->total_completed_scene * 100) / $this->total_scene) : 0,
+           'progress'    => $progress,
            'members'     => PublicUser::collection($this->whenLoaded('member')),
            'created_at'  => $this->created_at,
        ];
