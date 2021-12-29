@@ -267,9 +267,9 @@ class UserController extends RestController
             if( env('VERIFICATION_TYPE') == 'email' && $user->is_email_verify != 1){
                 return $this->__sendError(__('app.validation_msg'),['message' => __('app.email_not_verified')], 400);
             }
-            if( env('VERIFICATION_TYPE') == 'mobile' && $user->is_mobile_verify != 1){
-                return $this->__sendError(__('app.validation_msg'),['message' => __('app.mobile_not_verified')], 400);
-            }
+            // if( env('VERIFICATION_TYPE') == 'mobile' && $user->is_mobile_verify != 1){
+            //     return $this->__sendError(__('app.validation_msg'),['message' => __('app.mobile_not_verified')], 400);
+            // }
         }
         //update device token
         $api_token = User::updateDeviceToken($request,$user);
