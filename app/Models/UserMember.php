@@ -62,7 +62,12 @@ class UserMember extends Model
 
     public static function getMyContacts($mobile_no)
     {
-        $users = User::whereIn('mobile_no',$mobile_no)->get();
+        foreach( $mobile_no as $mb ){
+            $mb_data[] = str_replace(['+',' ','-','(',')'],'',$mb);
+        }
+        $mb_data = implode(',', $mb_data);
+        $users = User::whereRaw("REPLACE(REPLACE(mobile_no,'+',''),'-','') IN ($mb_data) ")
+                    ->get();
         return $users;
     }
 

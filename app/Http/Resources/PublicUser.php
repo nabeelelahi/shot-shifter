@@ -19,6 +19,7 @@ class PublicUser extends JsonResource
            'id'               => $this->id,
            'name'             => $this->name,
            'slug'             => $this->slug,
+           'mobile_no'        => $this->mobile_no,
            'image_url'        => Storage::url($this->image_url),
        ];
     }
