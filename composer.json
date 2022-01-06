@@ -22,7 +22,6 @@
         "php-ffmpeg/php-ffmpeg": "^0.17.0",
         "retrocube/post": "dev-master",
         "retrocube/user-follow": "dev-master",
-        "spatie/browsershot": "^3.52",
         "swayok/alternative-laravel-cache": "5.4.*",
         "telesign/telesign": "^2.2",
         "twilio/sdk": "^6.15"
