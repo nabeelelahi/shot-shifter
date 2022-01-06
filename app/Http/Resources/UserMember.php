@@ -14,6 +14,10 @@ class UserMember extends JsonResource
      */
     public function toArray($request)
     {
-       return parent::toArray($request);
+       return [
+           'id'         => $this->id,
+           'member'     => new PublicUser($this->whenLoaded('member')),
+           'created_at' => $this->created_at,
+       ];
     }
 }

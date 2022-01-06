@@ -55,6 +55,11 @@ class UserMember extends Model
      */
     protected $__cache_expire_time = 1; //days
 
+    public function member()
+    {
+        return $this->belongsTo(User::class,'target_id','id');
+    }
+
     public static function getMyContacts($mobile_no)
     {
         $users = User::whereIn('mobile_no',$mobile_no)->get();

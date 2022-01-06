@@ -21,6 +21,7 @@ class UserMemberHook
    */
     public function hook_query_index(&$query,$request, $slug=NULL) {
         //Your code here
+        $query->with('member');
     }
 
     /*
