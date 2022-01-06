@@ -61,6 +61,11 @@ class ShotList extends Model
                     ->select('id','name','slug','image_url');
     }
 
+    public function scenes()
+    {
+        return $this->hasMany(Scene::class,'shot_list_id','id');
+    }
+
     public function member()
     {
         return $this->hasMany(UserMemberShotList::class,'shot_list_id','id')
@@ -73,5 +78,13 @@ class ShotList extends Model
     public static function getShotListByID($id)
     {
         return self::where('id',$id)->first();
+    }
+
+    public static function exportShotList($params)
+    {
+        $query = self::with('scenes.breaks','member')
+                    ->where('id',$params['shot_list_id'])
+                    ->first();
+        return $query;
     }
 }

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -30,8 +29,8 @@ class Scene extends Model
     protected $fillable = [
         'shot_list_id', 'size', 'title', 'slug', 'image_url', 'description', 'angle', 'lens', 'internal_external',
         'sun_time', 'location', 'location_pin', 'cast', 'wardrobe', 'props', 'action', 'speed', 'sound', 'timepicker',
-        'grip','lines_dialogue_english', 'lines_dialogue_foreign', 'camera', 'is_complete', 'sort_order', 'status',
-        'created_at', 'updated_at', 'deleted_at'
+        'grip','lines_dialogue_english', 'lines_dialogue_foreign', 'camera', 'is_complete', 'sort_order', 'scene_no',
+        'status', 'created_at', 'updated_at', 'deleted_at'
     ];
 
     /**
@@ -88,7 +87,7 @@ class Scene extends Model
 
     public static function getMaxSortOrder($shot_list_id)
     {
-        $query = self::selectRaw('IFNULL(MAX(sort_order),0) AS sort_order')
+        $query = self::selectRaw('IFNULL(MAX(sort_order),0) AS sort_order, COUNT(*) AS total_scene')
                     ->where('shot_list_id',$shot_list_id)
                     ->first();
         return $query;

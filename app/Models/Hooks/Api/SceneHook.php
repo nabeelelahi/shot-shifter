@@ -45,9 +45,10 @@ class SceneHook
         if( !empty($postdata['image_url']) ){
             $postdata['image_url'] = CustomHelper::uploadMedia('scene',$postdata['image_url']);
         }
+        $postdata['scene_no']   = ($getSortorder->total_scene + 1);
         $postdata['sort_order'] = ($getSortorder->sort_order + 1);
-        $postdata['user_id'] = $request['user']->id;
-        $postdata['slug'] = time() . uniqid();
+        $postdata['user_id']    = $request['user']->id;
+        $postdata['slug']       = time() . uniqid();
         $postdata['created_at'] = Carbon::now();
     }
 

@@ -35,6 +35,7 @@ Route::middleware(['api_authorization'])->group(function(){
 
     Route::middleware(['custom_auth:api'])->group(function(){
 
+        Route::get('shot-list/export',[ShotListController::class,'getPdf']);
         Route::resource('shot-list',ShotListController::class);
         Route::post('scene/complete',[SceneController::class, 'sceneComplete']);
         Route::post('scene/reorder',[SceneController::class, 'reOrderRecord']);

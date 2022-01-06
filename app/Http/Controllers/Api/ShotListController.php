@@ -6,6 +6,8 @@ use Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use App\Http\Controllers\RestController;
+use App\Libraries\Export\Export;
+use App\Models\ShotList;
 
 class ShotListController extends RestController
 {
@@ -140,5 +142,27 @@ class ShotListController extends RestController
     public function afterDestroyLoadModel($request,$slug)
     {
 
+    }
+
+    public function getPdf()
+    {
+        $request = $this->__request;
+
+        $param_rule['type'] = 'required|in:PDF,GenerateImage';
+        $param_rule['shot_list_id'] = 'required|exists:shot_list,id';
+
+        $response = $this->__validateRequestParams($request->all(),$param_rule);
+
+        if( $this->__is_error )
+            return $response;
+
+        $data = ShotList::exportShotList($request->all());
+
+        $export['url'] = Export::init($request['type'],'pdf.index',$data)->export();
+
+        $this->__collection  = false;
+        $this->__is_paginate = false;
+
+        return $this->__sendResponse($export, 200, __('app.success_listing_msg'));
     }
 }
