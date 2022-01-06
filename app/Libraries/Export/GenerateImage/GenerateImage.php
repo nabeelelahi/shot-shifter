@@ -2,7 +2,7 @@
 
 namespace App\Libraries\Export\GenerateImage;
 
-use Spatie\Browsershot\Browsershot;
+use PDF AS DomPDF;
 use Illuminate\Support\Facades\Storage;
 use App\Libraries\Export\ExportInterface;
 
@@ -18,8 +18,13 @@ class GenerateImage implements ExportInterface
 
     public function export()
     {
+        $destination_path = 'pdf/' . $this->__export_data->slug . '.pdf';
         $html = view($this->__template_path,['data' => $this->__export_data])->render();
-        $base_64 = Browsershot::html($html)->base64Screenshot();
-        echo $base_64; exit;
+        $pdf  = DomPDF::loadHTML($html)->setPaper('a4', 'landscape')->setWarnings(false);
+        Storage::put($destination_path, $pdf->stream());
+        
+        $imgExt = new \Imagick();
+        $imgExt->readImage(Storage::path($destination_path));
+        $imgExt->writeImages('pdf_image_doc.jpg', true);
     }
 }
