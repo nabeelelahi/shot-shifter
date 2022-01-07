@@ -2,7 +2,7 @@
 
 namespace App\Libraries\Export\GenerateImage;
 
-use PDF AS DomPDF;
+use Anam\PhantomMagick\Converter;
 use Illuminate\Support\Facades\Storage;
 use App\Libraries\Export\ExportInterface;
 
@@ -18,13 +18,8 @@ class GenerateImage implements ExportInterface
 
     public function export()
     {
-        $destination_path = 'pdf/' . $this->__export_data->slug . '.pdf';
-        $html = view($this->__template_path,['data' => $this->__export_data])->render();
-        $pdf  = DomPDF::loadHTML($html)->setPaper('a4', 'landscape')->setWarnings(false);
-        Storage::put($destination_path, $pdf->stream());
-        
-        $imgExt = new \Imagick();
-        $imgExt->readImage(Storage::path($destination_path));
-        $imgExt->writeImages('pdf_image_doc.jpg', true);
+        $html = view($this->__template_path,$this->__export_data)->render();
+        $conv = new Converter();
+        $conv->addPage($html)->toPng()->save(public_path('pdf.jpg'));
     }
 }
