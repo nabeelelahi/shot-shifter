@@ -148,7 +148,7 @@ class ShotListController extends RestController
     {
         $request = $this->__request;
 
-        $param_rule['type'] = 'required|in:PDF,GenerateImage';
+        $param_rule['type'] = 'required|in:PDF';
         $param_rule['shot_list_id'] = 'required|exists:shot_list,id';
 
         $response = $this->__validateRequestParams($request->all(),$param_rule);

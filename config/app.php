@@ -166,7 +166,6 @@ return [
          * Package Service Providers...
          */
         Barryvdh\DomPDF\ServiceProvider::class,
-        Anam\PhantomMagick\ConverterServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -229,7 +228,6 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'CustomHelper' => App\Helpers\CustomHelper::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
-        'Converter' => Anam\PhantomMagick\Facades\Converter::class,
     ],
 
 ];
