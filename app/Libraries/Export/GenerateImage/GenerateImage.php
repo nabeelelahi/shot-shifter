@@ -20,6 +20,7 @@ class GenerateImage implements ExportInterface
     {
         $html = view($this->__template_path,$this->__export_data)->render();
         $conv = new Converter();
+        $conv->setBinary(base_path('phantomjs/bin/phantomjs'));
         $conv->addPage($html)->toPng()->save(public_path('pdf.jpg'));
     }
 }
