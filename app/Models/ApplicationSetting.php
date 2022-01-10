@@ -35,17 +35,6 @@ class ApplicationSetting extends Model
         'identifier', 'meta_key', 'value', 'is_file', 'created_at', 'updated_at', 'deleted_at'
     ];
 
-
-    public function getImageAttribute()
-    {
-        if (!empty($this->_is_file == 1) && Storage::disk('public')->exists($this->meta_value)) {
-            return Storage::disk('public')->url($this->meta_value);
-        }
-
-        return asset("images/favicon.png");
-    }
-
-
     public static function getRecords($identifer = '')
     {
         return self::where('identifier',$identifer)->get();
@@ -77,7 +66,6 @@ class ApplicationSetting extends Model
                 'created_at' => Carbon::now()
             ];
         }
-
         //delete old app setting
         self::where('identifier', 'application_setting')->whereIn("meta_key", $checkKey)->forceDelete();
         //save new app setting
