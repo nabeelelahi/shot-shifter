@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 use Intervention\Image\Facades\Image;
 
 class CustomHelper
@@ -176,7 +177,8 @@ class CustomHelper
      * @return array | string
      */
     public static function appSetting(string $identifer, string $meta_key = NULL)
-    {Cache::forget('setting_application_setting');
+    {
+        Cache::forget('setting_application_setting');
         $meta_value = '';
         $records = Cache::rememberForever('setting_' . $identifer, function () use ($identifer) {
             return ApplicationSetting::getRecords($identifer);
@@ -184,7 +186,7 @@ class CustomHelper
         if( count($records) ){
             foreach($records as $record){
                 if( !empty($meta_key) && $record->meta_key == $meta_key ){
-                    $meta_value = (!empty($record->is_file) && $record->is_file == 1)  ? $record->image : $record->value;
+                    $meta_value = (!empty($record->is_file) && $record->is_file == 1)  ? URL::to($record->value) : $record->value;
                 }
             }
         }
