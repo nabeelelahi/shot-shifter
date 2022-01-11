@@ -42,44 +42,6 @@
                     <a  href="#" class="nav-collapsed"><i class="fa fa-bars"></i></a>
                 </div>
                 <ul class="list-inline top-right-nav">
-                    <li class="dropdown icons-dropdown d-none-m">
-                        <a class="dropdown-toggle " data-toggle="dropdown" href="#"><i class="fa fa-bell"></i> <div class="notify setpos"> <span class="heartbit"></span> <span class="point"></span> </div></a>
-                        <ul class="dropdown-menu top-dropdown lg-dropdown notification-dropdown">
-                            <li>
-                                <div class="dropdown-header">
-                                    <a class="float-right" href="#"><small>View All</small></a> Notification
-                                </div>
-                                <div class="scrollDiv">
-                                    <div class="notification-list">
-                                        <a class="clearfix" href="javascript:void(0);">
-                                            <span class="notification-icon">
-                                                <img alt="" class="rounded-circle" src="{{ asset('admin/assets/img/avtar-2.png') }}" width="50">
-                                            </span>
-                                            <span class="notification-title">John Doe</span>
-                                            <span class="notification-description">Lorem Ipsum is simply dummy text of the printing.</span>
-                                            <span class="notification-time">15 minutes ago</span>
-                                        </a>
-                                        <a class="clearfix" href="javascript:void(0);">
-                                            <span class="notification-icon">
-                                                <img alt="" class="rounded-circle" src="{{ asset('admin/assets/img/avtar-2.png') }}" width="50">
-                                            </span>
-                                            <span class="notification-title">John Doe</span>
-                                            <span class="notification-description">Lorem Ipsum is simply dummy text of the printing.</span>
-                                            <span class="notification-time">15 minutes ago</span>
-                                        </a>
-                                        <a class="clearfix" href="javascript:void(0);">
-                                            <span class="notification-icon">
-                                                <img alt="" class="rounded-circle" src="{{ asset('admin/assets/img/avtar-2.png') }}" width="50">
-                                            </span>
-                                            <span class="notification-title">John Doe</span>
-                                            <span class="notification-description">Lorem Ipsum is simply dummy text of the printing.</span>
-                                            <span class="notification-time">15 minutes ago</span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </li>
                     <li class="dropdown avtar-dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                             <img alt="" class="rounded-circle" src="{{ !empty( CustomHelper::currentUser()->image_url) ? URL::to( CustomHelper::currentUser()->image_url) : asset('admin/assets/img/avtar-2.png') }}" width="30">
