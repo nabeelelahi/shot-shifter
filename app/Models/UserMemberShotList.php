@@ -68,4 +68,13 @@ class UserMemberShotList extends Model
     {
         return $this->belongsTo(ShotList::class,'shot_list_id','id');
     }
+
+    public static function checkUserMember($shot_list_id,$member_id)
+    {
+        $query = \DB::table('user_member_shotlist')
+                      ->where('shot_list_id',$shot_list_id)
+                      ->where('target_id',$member_id)
+                      ->count();
+        return $query;
+    }
 }

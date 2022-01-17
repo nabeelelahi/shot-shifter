@@ -6,6 +6,7 @@ use Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use App\Http\Controllers\RestController;
+use App\Models\UserMemberShotList;
 
 class UserMemberShotListController extends RestController
 {
@@ -42,7 +43,7 @@ class UserMemberShotListController extends RestController
                     ],
                     'target_id'     => [
                         'required',
-                        Rule::exists('users','id')->whereNull('deleted_at'),
+                        //Rule::exists('users','id')->whereNull('deleted_at'),
                     ],
                 ]);
                 break;
@@ -88,7 +89,11 @@ class UserMemberShotListController extends RestController
      */
     public function beforeStoreLoadModel($request)
     {
-
+        $checkUserMember = UserMemberShotList::checkUserMember($request['shot_list_id'],$request['target_id']);
+        if( $checkUserMember ){
+            $this->__is_error = true;
+            return $this->__sendError('Validation Message',['message' => 'Selected user has already been added'], 400);
+        }
     }
 
     /**

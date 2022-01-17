@@ -99,8 +99,7 @@ class CustomAuthentication
                 'data'    => [ 'auth' => __('app.authorize_header_missing') ]
             ],401);
         }
-
-        $user      = User::getUserByApiToken($api_token);
+        $user = User::getUserByApiToken($api_token);
         if(!isset($user->id))
         {
             return response()->json([
