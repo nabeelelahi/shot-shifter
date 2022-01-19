@@ -89,11 +89,11 @@ class UserMemberShotListController extends RestController
      */
     public function beforeStoreLoadModel($request)
     {
-        $checkUserMember = UserMemberShotList::checkUserMember($request['shot_list_id'],$request['target_id']);
-        if( $checkUserMember ){
-            $this->__is_error = true;
-            return $this->__sendError('Validation Message',['message' => 'Selected user has already been added'], 400);
-        }
+        // $checkUserMember = UserMemberShotList::checkUserMember($request['shot_list_id'],$request['target_id']);
+        // if( $checkUserMember ){
+        //     $this->__is_error = true;
+        //     return $this->__sendError('Validation Message',['message' => 'Selected user has already been added'], 400);
+        // }
     }
 
     /**
@@ -157,5 +157,22 @@ class UserMemberShotListController extends RestController
     public function afterDestroyLoadModel($request,$slug)
     {
 
+    }
+
+    public function store()
+    {
+        $request = $this->__request;
+        $param_rule['shot_list_id'] = 'required';
+        $param_rule['target_id']    = 'required';
+
+        $response = $this->__validateRequestParams($request->all(),$param_rule);
+        if( $this->__is_error )
+            return $response;
+
+        $record = UserMemberShotList::addMembers($request->all());
+
+        $this->__is_paginate = false;
+
+        return $this->__sendResponse($record, 200, __('app.success_listing_message'));
     }
 }

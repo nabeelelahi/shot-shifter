@@ -77,4 +77,39 @@ class UserMemberShotList extends Model
                       ->count();
         return $query;
     }
+
+    public static function addMembers($params)
+    {
+        $existing_target_ids = [];
+        $getShotListMembers  = self::where('shot_list_id',$params['shot_list_id'])->get();
+        if( count($getShotListMembers) ){
+            foreach( $getShotListMembers as $shotListMember ){
+                $existing_target_ids[] = $shotListMember->target_id;
+            }
+        }
+        $target_ids = $params['target_id'];
+        $target_ids = array_unique(array_merge($existing_target_ids,$target_ids));
+        //delete old member data
+        self::where('shot_list_id',$params['shot_list_id'])->forceDelete();
+        //add new member data
+        foreach( $target_ids as $value ){
+            $insert_data[] = [
+                'shot_list_id' => $params['shot_list_id'],
+                'actor_id'     => $params['user']->id,
+                'target_id'    => $value,
+                'slug'         => $value . uniqid(),
+            ];
+        }
+        self::insert($insert_data);
+
+        return self::getShotListMembers($params['shot_list_id']);
+    }
+
+    public static function getShotListMembers($shot_list_id)
+    {
+        $query = self::with('actor','target','shotList')
+                    ->where('shot_list_id',$shot_list_id)
+                    ->get();
+        return $query;
+    }
 }
