@@ -148,7 +148,7 @@ class ShotListController extends RestController
     {
         $request = $this->__request;
 
-        $param_rule['type'] = 'required|in:PDF,CSV';
+        $param_rule['type'] = 'required|in:pdf,csv';
         $param_rule['shot_list_id'] = 'required|exists:shot_list,id';
 
         $response = $this->__validateRequestParams($request->all(),$param_rule);
@@ -158,7 +158,7 @@ class ShotListController extends RestController
 
         $data = ShotList::exportShotList($request->all());
 
-        $export['url'] = Export::init($request['type'],'pdf.index',$data,'csv')->export();
+        $export['url'] = Export::init($request['type'],'pdf.index',$data,$request['type'])->export();
 
         $this->__collection  = false;
         $this->__is_paginate = false;
