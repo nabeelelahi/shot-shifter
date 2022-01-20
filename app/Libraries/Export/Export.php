@@ -11,9 +11,9 @@ Class Export
      * @params {string} $export_data
      * @return Class Instance
      */
-    public static function init($class_name,$template_path,$export_data)
+    public static function init($class_name,$template_path,$export_data,$extension_type = 'pdf')
     {
         $notification_file_path = '\App\Libraries\Export\\' . $class_name . '\\' . $class_name;
-        return new $notification_file_path($template_path, $export_data);
+        return new $notification_file_path($template_path, $export_data, $extension_type);
     }
 }
