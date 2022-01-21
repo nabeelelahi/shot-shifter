@@ -27,7 +27,7 @@ class UserMemberShotListHook
         if( !empty($request['shot_list_id']) ){
             $query->where('shot_list_id',$request['shot_list_id']);
         }
-        $query->where('actor_id',$request['user']->id);
+        //$query->where('actor_id',$request['user']->id);
     }
 
     /*
