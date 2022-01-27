@@ -109,13 +109,13 @@ class CustomAuthentication
             ],401);
         }
         $check_api_token  = UserApiToken::generateApiToken($user->id,$this->request->ip(),$this->request->header('token'),$user->created_at);
-        if( $check_api_token != $api_token ){
-            return response()->json([
-                'code'    => 401,
-                'message' => 'Unauthorized',
-                'data'    => [ 'auth' => __('app.authorize_header_invalid') ]
-            ],401);
-        }
+        // if( $check_api_token != $api_token ){
+        //     return response()->json([
+        //         'code'    => 401,
+        //         'message' => 'Unauthorized',
+        //         'data'    => [ 'auth' => __('app.authorize_header_invalid') ]
+        //     ],401);
+        // }
         if( $user->status != 1 ){
             return response()->json([
                 'code'    => 401,

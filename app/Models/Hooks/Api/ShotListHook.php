@@ -3,6 +3,7 @@
 namespace App\Models\Hooks\Api;
 
 use App\Helpers\CustomHelper;
+use App\Models\ShotListUserPin;
 use Carbon\Carbon;
 
 class ShotListHook
@@ -28,6 +29,11 @@ class ShotListHook
         $query->select('shot_list.*');
         if( $slug == NULL )
         {
+            $query->selectRaw('IF(sup.id IS NOT NULL,1,0) AS is_user_pin');
+            $query->leftJoin('shotlist_user_pin AS sup',function($leftJoin) use ($request){
+                $leftJoin->on('sup.shot_list_id','=','shot_list.id')
+                         ->where('sup.user_id',$request['user']->id);
+            });
             if( !empty($request['keyword']) ){
                 $keyword = $request['keyword'];
                 $query->where(function($where) use ($keyword){
@@ -41,8 +47,11 @@ class ShotListHook
             } else {
                 $query->where('shot_list.user_id',$request['user']->id);
             }
+
+            $query->orderByRaw("is_user_pin DESC, ID DESC");
+            $query->groupBy('shot_list.id');
         }
-        $query->orderByRaw("is_pin DESC, ID DESC");
+
     }
 
     /*
@@ -101,6 +110,15 @@ class ShotListHook
     */
     public function hook_after_edit($request, $slug) {
         //Your code here
+        if( isset($request['is_pin']) ){
+            $shotList = $this->_model->where('slug',$slug)->first();
+            if( isset($shotList->id) ){
+                ShotListUserPin::insert([
+                    'user_id'      => $request['user']->id,
+                    'shot_list_id' => $shotList->id
+                ]);
+            }
+        }
     }
 
     /*
