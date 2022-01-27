@@ -19,8 +19,8 @@ class ShotList extends JsonResource
          $progress = 0;
        } else {
          $progress = $this->total_completed_scene > 0 ? round( ($this->total_completed_scene * 100) / $this->total_scene) : 0;
-       }    
-      
+       }
+
        return [
            'id'          => $this->id,
            'user_id'     => new PublicUser($this->whenLoaded('user')),
@@ -29,7 +29,7 @@ class ShotList extends JsonResource
            'image_url'   => Storage::url($this->image_url),
            'description' => $this->description,
            'is_lock'     => $this->is_lock,
-           'is_pin'      => $this->is_pin,
+           'is_pin'      => !empty($this->is_user_pin) ? 1 : 0,
            'sort_order'  => $this->sort_order,
            'status'      => $this->status,
            'progress'    => $progress,
