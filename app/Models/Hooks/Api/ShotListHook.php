@@ -44,6 +44,7 @@ class ShotListHook
             if( !empty($request['type']) && $request['type'] == 'share'){
                 $query->join('user_member_shotlist AS ums','ums.shot_list_id','=','shot_list.id');
                 $query->where('ums.target_id',$request['user']->id);
+                $query->whereNull('ums.deleted_at');
             } else {
                 $query->where('shot_list.user_id',$request['user']->id);
             }
