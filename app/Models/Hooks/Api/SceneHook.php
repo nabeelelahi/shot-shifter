@@ -29,6 +29,11 @@ class SceneHook
         if( !empty($request['shot_list_id']) )
             $query->where('shot_list_id',$request['shot_list_id']);
 
+        if( !empty($request['keyword']) ){
+            $keyword = $request['keyword'];
+            $query->where('keyword','like',"%$keyword%");
+        }
+
         $query->orderBy('sort_order','asc');
     }
 
