@@ -31,7 +31,10 @@ class SceneHook
 
         if( !empty($request['keyword']) ){
             $keyword = $request['keyword'];
-            $query->where('keyword','like',"%$keyword%");
+            $query->where( function($where) use ($keyword){
+                $where->orWhere('title','like',"%$keyword%");
+                $where->orWhere('description','like',"%$keyword%");
+            });
         }
 
         $query->orderBy('sort_order','asc');
