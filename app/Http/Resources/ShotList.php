@@ -26,7 +26,7 @@ class ShotList extends JsonResource
            'user_id'     => new PublicUser($this->whenLoaded('user')),
            'name'        => $this->name,
            'slug'        => $this->slug,
-           'image_url'   => Storage::url($this->image_url),
+           'image_url'   => !empty($this->image_url) ? Storage::url($this->image_url) : NULL,
            'description' => $this->description,
            'is_lock'     => $this->is_lock,
            'is_pin'      => !empty($this->is_user_pin) ? 1 : 0,
