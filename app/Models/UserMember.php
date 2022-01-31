@@ -65,9 +65,7 @@ class UserMember extends Model
         foreach( $mobile_no as $mb ){
             $mb_data[] = str_replace(['+',' ','-','(',')','*','#'],'',$mb);
         }
-        $mb_data = implode(',', $mb_data);
-        $users = User::whereRaw("REPLACE(REPLACE(mobile_no,'+',''),'-','') IN ($mb_data) ")
-                    ->get();
+        $users = User::whereIn(\DB::raw("REPLACE(REPLACE(mobile_no,'+',''),'-','')"), $mb_data)->get();
         return $users;
     }
 
