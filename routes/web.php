@@ -17,6 +17,7 @@ use App\Http\Controllers\HomeController;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('generate-pdf',[HomeController::class,'generatePDF']);
 Route::get('content/{slug}',[HomeController::class,'getContent'])->name('content');
 Route::get('user/verify/{name}',[UserController::class,'verifyEmail'])->name('verifyEmail');
 Route::match(['get','post'],'user/reset-password/{any}',[UserController::class,'resetPassword'])->name('reset-password');

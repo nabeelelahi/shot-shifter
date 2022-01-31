@@ -42,4 +42,11 @@ class HomeController extends Controller
             return abort(404);
         }
     }
+
+    public function generatePDF()
+    {
+        $html = view('pdf.index')->render();
+        $pdf  = \PDF::loadHTML($html)->setPaper('a4', 'landscape')->setWarnings(false);
+        return $pdf->stream();
+    }
 }
