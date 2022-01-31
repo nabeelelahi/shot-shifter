@@ -45,6 +45,7 @@ class HomeController extends Controller
 
     public function generatePDF()
     {
+        ini_set('max_execution_time',-1);
         $html = view('pdf.index')->render();
         $pdf  = \PDF::loadHTML($html)->setPaper('a4', 'landscape')->setWarnings(false);
         return $pdf->stream();
