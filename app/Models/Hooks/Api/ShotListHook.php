@@ -114,10 +114,16 @@ class ShotListHook
         if( isset($request['is_pin']) ){
             $shotList = $this->_model->where('slug',$slug)->first();
             if( isset($shotList->id) ){
-                ShotListUserPin::insert([
-                    'user_id'      => $request['user']->id,
-                    'shot_list_id' => $shotList->id
-                ]);
+                if( $request['is_pin'] == 0 ){
+                    ShotListUserPin::where('user_id',$request['user']->id)
+                                    ->where('shot_list_id',$shotList->id)
+                                    ->forceDelete();
+                } else {
+                    ShotListUserPin::insert([
+                        'user_id'      => $request['user']->id,
+                        'shot_list_id' => $shotList->id
+                    ]);
+                }
             }
         }
     }
