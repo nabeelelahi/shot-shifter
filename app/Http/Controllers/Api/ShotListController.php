@@ -156,7 +156,6 @@ class ShotListController extends RestController
             return $response;
 
         $data = ShotList::exportShotList($request->all());
-
         $export['url'] = Export::init($request['type'],'pdf.index',$data,strtolower($request['type']))->export();
 
         $this->__collection  = false;

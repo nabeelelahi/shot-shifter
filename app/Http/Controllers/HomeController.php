@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ContentManagement;
+use App\Models\ShotList;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -43,10 +44,11 @@ class HomeController extends Controller
         }
     }
 
-    public function generatePDF()
+    public function generatePDF(Request $request)
     {
         ini_set('max_execution_time',-1);
-        $html = view('pdf.index')->render();
+        $data = ShotList::exportShotList($request->all());
+        $html = view('pdf.index',['data' => $data])->render();
         $pdf  = \PDF::loadHTML($html)->setPaper('a4', 'landscape')->setWarnings(false);
         return $pdf->stream();
     }
