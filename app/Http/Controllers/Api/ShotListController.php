@@ -41,7 +41,6 @@ class ShotListController extends RestController
                 $validator = Validator::make($this->__request->all(), [
                     'name'        => 'min:2|max:50',
                     'image_url'   => 'image|max:10240',
-                    'description' => 'min:2|max:1000',
                     'is_lock'     => 'in:1,0',
                 ]);
                 break;
