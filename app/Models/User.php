@@ -37,7 +37,7 @@ class User extends Authenticatable
         'user_group_id', 'name', 'username', 'slug', 'email', 'mobile_no', 'password', 'image_url', 'status',
         'is_email_verify', 'email_verify_at', 'is_mobile_verify', 'mobile_verify_at', 'country', 'city', 'state',
         'zipcode', 'address', 'latitude', 'longitude', 'online_status','mobile_otp', 'email_otp', 'notification_setting',
-        'remember_token', 'created_at', 'updated_at', 'deleted_at'
+        'subscription_expiry_date', 'remember_token', 'created_at', 'updated_at', 'deleted_at'
     ];
 
     /**

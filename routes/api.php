@@ -9,6 +9,8 @@ use App\Http\Controllers\Api\BreaksController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Api\UserMemberShotListController;
 use App\Http\Controllers\Api\UserMemberController;
+use App\Http\Controllers\Api\UserSubscriptionController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -48,6 +50,8 @@ Route::middleware(['api_authorization'])->group(function(){
         Route::post('notification/send',[NotificationController::class,'sendNotification']);
         Route::post('notification/setting',[NotificationController::class,'saveNotificationSetting']);
         Route::get('notification/setting',[NotificationController::class,'getNotificationSetting']);
+
+        Route::post('user-subscription',[UserSubscriptionController::class,'store']);
 
     });
 

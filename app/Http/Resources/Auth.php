@@ -38,6 +38,7 @@ class Auth extends JsonResource
            'platform_type'    => $this->platform_type,
            'platform_id'      => $this->platform_id,
            'notification_setting' => $this->notification_setting,
+           'subscription_expiry_date' => $this->subscription_expiry_date,
            'created_at'       => $this->created_at,
        ];
     }
