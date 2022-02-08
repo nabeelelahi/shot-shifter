@@ -37,5 +37,7 @@ return [
     'password_regex'              => 'Password should be one uppercase letter, one lowercase letter, one digit, one special character and minimum of length should be an eight characters',
     'permission_denied'           => "You don't have a permission to access this module",
     'follow_request_pending'      => 'You have already sent a follow request',
-    'follow_request_accepted'     => 'You have already followed this user'
+    'follow_request_accepted'     => 'You have already followed this user',
+    'member_added_msg'            => ':actor added you in Shot list :shotlist',
+    'member_removed_msg'          => ':actor removed you in Shot list :shotlist'
 ];

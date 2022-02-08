@@ -112,4 +112,17 @@ class UserMemberShotList extends Model
                     ->get();
         return $query;
     }
+
+    public static function getUserByMemberSlug($member_slug)
+    {
+        $query = \DB::table('user_member_shotlist AS ums')
+                        ->select('u.*','uat.device_type','uat.device_token','ums.shot_list_id','sl.name AS shot_list_name')
+                        ->join('shot_list AS sl','sl.id','=','ums.shot_list_id')
+                        ->join('users AS u','u.id','=','ums.target_id')
+                        ->join('user_api_token AS uat','uat.user_id','=','u.id')
+                        ->where('ums.slug',$member_slug)
+                        ->take(500)
+                        ->get();
+        return $query;
+    }
 }

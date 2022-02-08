@@ -257,4 +257,16 @@ class User extends Authenticatable
                     ->get();
         return $query;
     }
+
+    public static function getUserByDeviceType($device_type, $user_ids = [])
+    {
+        $query = self::select('users.*','uat.device_type','uat.device_token')
+                    ->join('user_api_token AS uat','uat.user_id','=','users.id')
+                    ->where('uat.device_type',$device_type);
+        if( count($user_ids) ){
+            $query->whereIn('users.id',$user_ids);
+        }
+        $users = $query->get();
+        return $users;
+    }
 }

@@ -53,7 +53,7 @@ class UserMemberShotListHook
     */
     public function hook_after_add($request,$record)
     {
-        //Your code here
+
     }
 
     /*
