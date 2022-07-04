@@ -29,8 +29,8 @@ class Scene extends Model
     protected $fillable = [
         'shot_list_id', 'size', 'title', 'slug', 'image_url', 'description', 'angle', 'lens', 'internal_external',
         'sun_time', 'location', 'location_pin', 'cast', 'wardrobe', 'props', 'action', 'speed', 'sound', 'timepicker',
-        'grip','lines_dialogue_english', 'lines_dialogue_foreign', 'camera', 'is_complete', 'sort_order', 'scene_no',
-        'status', 'created_at', 'updated_at', 'deleted_at'
+        'grip','lines_dialogue_english', 'lines_dialogue_foreign', 'camera', 'is_complete', 'sort_order', 'shoot_sort_order',
+        'scene_no', 'status', 'created_at', 'updated_at', 'deleted_at'
     ];
 
     /**
@@ -123,7 +123,11 @@ class Scene extends Model
             }
             $ids = implode(',', $ids);
             $cases = implode(' ', $cases);
-           \DB::update("UPDATE scenes SET `sort_order` = CASE `id` {$cases} END WHERE `id` in ({$ids})", $data);
+            if( $params['mode'] == 'watch ' )
+                \DB::update("UPDATE scenes SET `sort_order` = CASE `id` {$cases} END WHERE `id` in ({$ids})", $data);
+            else
+                \DB::update("UPDATE scenes SET `shoot_sort_order` = CASE `id` {$cases} END WHERE `id` in ({$ids})", $data);
+
         }
         $sorted = collect($api_data)->sortBy('sort_order');
 

@@ -36,8 +36,15 @@ class SceneHook
                 $where->orWhere('description','like',"%$keyword%");
             });
         }
-
-        $query->orderBy('sort_order','asc');
+        if( !empty($request['mode']) ){
+            if( $request['mode'] == 'watch ' ){
+                $query->orderBy('sort_order','asc');
+            } else {
+                $query->orderBy('shoot_sort_order','asc');
+            }
+        } else {
+            $query->orderBy('sort_order','asc');
+        }
     }
 
     /*
