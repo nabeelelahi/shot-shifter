@@ -21,6 +21,7 @@ class PublicUser extends JsonResource
            'slug'             => $this->slug,
            'mobile_no'        => $this->mobile_no,
            'image_url'        => Storage::url($this->image_url),
+           'is_edit'          => !empty($this->is_edit) ? 1 : 0,
        ];
     }
 }

@@ -28,7 +28,8 @@ class UserMemberShotList extends Model
      * @var array
      */
     protected $fillable = [
-        'shot_list_id', 'actor_id', 'target_id', 'slug', 'created_at', 'updated_at', 'deleted_at'
+        'shot_list_id', 'actor_id', 'target_id', 'slug', 'is_edit', 'created_at',
+        'updated_at', 'deleted_at'
     ];
 
     /**

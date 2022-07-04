@@ -91,7 +91,7 @@ class CustomAuthentication
      */
     protected function apiAuth()
     {
-        $api_token    = $this->request->header('authorization');
+        $api_token    = $this->request->header('user-token');
         if( empty($api_token) ){
             return response()->json([
                 'code'    => 401,
