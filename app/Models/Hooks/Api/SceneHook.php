@@ -37,7 +37,7 @@ class SceneHook
             });
         }
         if( !empty($request['mode']) ){
-            if( $request['mode'] == 'watch ' ){
+            if( $request['mode'] == 'story ' ){
                 $query->orderBy('sort_order','asc');
             } else {
                 $query->orderBy('shoot_sort_order','asc');

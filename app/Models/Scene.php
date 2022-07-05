@@ -123,7 +123,7 @@ class Scene extends Model
             }
             $ids = implode(',', $ids);
             $cases = implode(' ', $cases);
-            if( $params['mode'] == 'watch ' )
+            if( $params['mode'] == 'story ' )
                 \DB::update("UPDATE scenes SET `sort_order` = CASE `id` {$cases} END WHERE `id` in ({$ids})", $data);
             else
                 \DB::update("UPDATE scenes SET `shoot_sort_order` = CASE `id` {$cases} END WHERE `id` in ({$ids})", $data);

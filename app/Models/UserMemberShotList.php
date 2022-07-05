@@ -99,6 +99,7 @@ class UserMemberShotList extends Model
                 'actor_id'     => $params['user']->id,
                 'target_id'    => $value,
                 'slug'         => $value . uniqid(),
+                'is_edit'      => !empty($params['is_edit'][$value]) ? $params['is_edit'][$value] : 0
             ];
         }
         self::insert($insert_data);
