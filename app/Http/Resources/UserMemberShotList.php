@@ -19,6 +19,7 @@ class UserMemberShotList extends JsonResource
            'actor_id'   => $this->actor_id,
            'target_id'  => $this->target_id,
            'slug'       => $this->slug,
+           'is_edit'    => $this->is_edit,
            'created_at' => $this->created_at,
            'actor'      => new PublicUser($this->whenLoaded('actor')),
            'target'     => new PublicUser($this->whenLoaded('target')),

@@ -87,7 +87,7 @@ class Scene extends Model
 
     public static function getMaxSortOrder($shot_list_id)
     {
-        $query = self::selectRaw('IFNULL(MAX(sort_order),0) AS sort_order, COUNT(*) AS total_scene')
+        $query = self::selectRaw('IFNULL(MAX(sort_order),0) AS sort_order, IFNULL(MAX(shoot_sort_order),0) AS shoot_sort_order, COUNT(*) AS total_scene')
                     ->where('shot_list_id',$shot_list_id)
                     ->first();
         return $query;
@@ -123,7 +123,7 @@ class Scene extends Model
             }
             $ids = implode(',', $ids);
             $cases = implode(' ', $cases);
-            if( $params['mode'] == 'story ' )
+            if( $params['mode'] == 'story' )
                 \DB::update("UPDATE scenes SET `sort_order` = CASE `id` {$cases} END WHERE `id` in ({$ids})", $data);
             else
                 \DB::update("UPDATE scenes SET `shoot_sort_order` = CASE `id` {$cases} END WHERE `id` in ({$ids})", $data);

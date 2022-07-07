@@ -62,6 +62,7 @@ class SceneHook
         }
         $postdata['scene_no']   = ($getSortorder->total_scene + 1);
         $postdata['sort_order'] = ($getSortorder->sort_order + 1);
+        $postdata['shoot_sort_order'] = ($getSortorder->shoot_sort_order + 1);
         $postdata['user_id']    = $request['user']->id;
         $postdata['slug']       = time() . uniqid();
         $postdata['created_at'] = Carbon::now();

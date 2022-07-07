@@ -69,7 +69,7 @@ class ShotList extends Model
     public function member()
     {
         return $this->hasMany(UserMemberShotList::class,'shot_list_id','id')
-                    ->select('user_member_shotlist.shot_list_id')
+                    ->select('user_member_shotlist.shot_list_id','user_member_shotlist.is_edit')
                     ->selectRaw("u.id, u.name, user_member_shotlist.slug, u.image_url")
                     ->join('users AS u','u.id','=','user_member_shotlist.target_id');
     }
