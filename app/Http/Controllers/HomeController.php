@@ -23,16 +23,22 @@ class HomeController extends Controller
                 return $this->__sendError('validation Message',['message' => 'invalid credential'],400);
 
             \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+
             \DB::table('breaks')->truncate();
             \DB::table('media')->truncate();
             \DB::table('notification')->truncate();
+            \DB::table('notification_setting')->truncate();
             \DB::table('reset_password')->truncate();
             \DB::table('scenes')->truncate();
             \DB::table('shot_list')->truncate();
+            \DB::table('shotlist_user_pin')->truncate();
             \DB::table('user_api_token')->truncate();
-            \DB::table('user_share')->truncate();
             \DB::table('user_member')->truncate();
+            \DB::table('user_member_shotlist')->truncate();
+            \DB::table('user_share')->truncate();
+            \DB::table('user_subscriptions')->truncate();
             \DB::table('users')->truncate();
+
             \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
             $this->__is_paginate = false;
