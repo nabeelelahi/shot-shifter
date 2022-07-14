@@ -41,6 +41,7 @@ class Scene extends JsonResource
            'camera'      => $this->camera,
            'is_complete' => $this->is_complete,
            'sort_order'  => $this->sort_order,
+           'shoot_sort_order' => $this->shoot_sort_order,
            'scene_no'    => $this->scene_no,
            'created_at'  => $this->created_at,
            'shot_list'   => new ShotList($this->whenLoaded('shotList')),
