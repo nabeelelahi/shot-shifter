@@ -100,18 +100,27 @@ class Scene extends Model
         $subtract_index   = $params['old_sort_order'] > $params['new_sort_order'] ? true : false;
         $max_index        = $params['old_sort_order'] > $params['new_sort_order'] ? $params['old_sort_order'] : $params['new_sort_order'];
 
-        $records = self::with(['shotList','breaks'])
-                        ->where('shot_list_id',$params['shot_list_id'])
-                        ->whereBetween('sort_order',[$sort_order_index,$max_index])
-                        ->orderBy('sort_order','asc')
-                        ->get();
+        $query = self::with(['shotList','breaks'])
+                        ->where('shot_list_id',$params['shot_list_id']);
+        if( $params['mode'] == 'story' ){
+            $query->whereBetween('sort_order',[$sort_order_index,$max_index])
+                  ->orderBy('sort_order','asc');
+        } else {
+            $query->whereBetween('shoot_sort_order',[$sort_order_index,$max_index])
+                  ->orderBy('shoot_sort_order','asc');
+        }
+        $records = $query->get();
 
-         if( count($records) ){
+        if( count($records) ){
            foreach( $records as $record ){
                 if( $record->id == $params['scene_id'] ){
                     $sort_order = $params['new_sort_order'];
                 } else {
-                    $sort_order = $subtract_index ? ($record->sort_order + 1) : ($record->sort_order - 1);
+                    if( $params['mode'] == 'story' ){
+                        $sort_order = $subtract_index ? ($record->sort_order + 1) : ($record->sort_order - 1);
+                    } else {
+                        $sort_order = $subtract_index ? ($record->shoot_sort_order + 1) : ($record->sort_order - 1);
+                    }
                 }
                 $cases[]  = "WHEN {$record->id} then ?";
                 $data[]   = $sort_order;
@@ -130,7 +139,6 @@ class Scene extends Model
 
         }
         $sorted = collect($api_data)->sortBy('sort_order');
-
         return $sorted;
     }
 }
