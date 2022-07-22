@@ -33,6 +33,7 @@ class ShotList extends JsonResource
            'sort_order'  => $this->sort_order,
            'status'      => $this->status,
            'progress'    => $progress,
+           'is_edit'     => !empty($this->is_edit) ? 1 : 0,
            'members'     => PublicUser::collection($this->whenLoaded('member')),
            'created_at'  => $this->created_at,
        ];
