@@ -81,15 +81,15 @@ class UserMemberShotList extends Model
 
     public static function addMembers($params)
     {
-        $existing_target_ids = [];
-        $getShotListMembers  = self::where('shot_list_id',$params['shot_list_id'])->get();
-        if( count($getShotListMembers) ){
-            foreach( $getShotListMembers as $shotListMember ){
-                $existing_target_ids[] = $shotListMember->target_id;
-            }
-        }
+        // $existing_target_ids = [];
+        // $getShotListMembers  = self::where('shot_list_id',$params['shot_list_id'])->get();
+        // if( count($getShotListMembers) ){
+        //     foreach( $getShotListMembers as $shotListMember ){
+        //         $existing_target_ids[] = $shotListMember->target_id;
+        //     }
+        // }
         $target_ids = $params['target_id'];
-        $target_ids = array_unique(array_merge($existing_target_ids,$target_ids));
+        //$target_ids = array_unique(array_merge($existing_target_ids,$target_ids));
         //delete old member data
         //self::where('shot_list_id',$params['shot_list_id'])->forceDelete();
         //add new member data
