@@ -110,7 +110,6 @@ class Scene extends Model
                   ->orderBy('shoot_sort_order','asc');
         }
         $records = $query->get();
-
         if( count($records) ){
            foreach( $records as $record ){
                 if( $record->id == $params['scene_id'] ){
@@ -119,7 +118,7 @@ class Scene extends Model
                     if( $params['mode'] == 'story' ){
                         $sort_order = $subtract_index ? ($record->sort_order + 1) : ($record->sort_order - 1);
                     } else {
-                        $sort_order = $subtract_index ? ($record->shoot_sort_order + 1) : ($record->sort_order - 1);
+                        $sort_order = $subtract_index ? ($record->shoot_sort_order + 1) : ($record->shoot_sort_order - 1);
                     }
                 }
                 $cases[]  = "WHEN {$record->id} then ?";
