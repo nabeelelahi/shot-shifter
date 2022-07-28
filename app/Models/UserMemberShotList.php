@@ -91,7 +91,7 @@ class UserMemberShotList extends Model
         $target_ids = $params['target_id'];
         $target_ids = array_unique(array_merge($existing_target_ids,$target_ids));
         //delete old member data
-        self::where('shot_list_id',$params['shot_list_id'])->forceDelete();
+        //self::where('shot_list_id',$params['shot_list_id'])->forceDelete();
         //add new member data
         foreach( $target_ids as $value ){
             $insert_data[] = [
