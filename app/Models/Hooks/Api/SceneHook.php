@@ -119,7 +119,6 @@ class SceneHook
     */
     public function hook_before_delete($request, $slug) {
         //Your code here
-
     }
 
     /*
@@ -135,6 +134,22 @@ class SceneHook
         if( count($records) ){
             foreach( $records as $record ){
                 \DB::table('shot_list')->where('id',$record->shot_list_id)->decrement('total_scene', 1);
+                $scenes = $this->_model->where('id','>',$record->id)->get();
+                if( count($scenes) ){
+                    $scene_no = $record->scene_no;
+                    $cases = [];
+                    $data  = [];
+                    $ids   = [];
+                    foreach( $scenes as $scene ){
+                        $cases[]  = "WHEN {$scene->id} then ?";
+                        $data[]   = $scene_no;
+                        $ids[]    = $scene->id;
+                        $scene_no++;
+                    }
+                    $ids = implode(',', $ids);
+                    $cases = implode(' ', $cases);
+                    \DB::update("UPDATE scenes SET `scene_no` = CASE `id` {$cases} END WHERE `id` in ({$ids})", $data);
+                }
             }
         }
     }
