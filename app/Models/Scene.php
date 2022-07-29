@@ -137,7 +137,15 @@ class Scene extends Model
                 \DB::update("UPDATE scenes SET `shoot_sort_order` = CASE `id` {$cases} END WHERE `id` in ({$ids})", $data);
 
         }
-        $sorted = collect($api_data)->sortBy('sort_order');
-        return $sorted;
+        $query = self::with(['shotList','breaks'])
+                        ->where('shot_list_id',$params['shot_list_id']);
+        if( $params['mode'] == 'story' ){
+            $query->orderBy('sort_order','asc');
+        } else {
+            $query->orderBy('shoot_sort_order','asc');
+        }
+        $records = $query->take(200)->get();
+
+        return $records;
     }
 }
