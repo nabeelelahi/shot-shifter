@@ -147,7 +147,8 @@ class SceneController extends RestController
      */
     public function afterDestroyLoadModel($request,$slug)
     {
-
+        $record = \DB::table('scenes')->where('slug',$slug)->first();
+        return Scene::getAllScenes(['shot_list_id' => $record->shot_list_id]);
     }
 
     public function sceneComplete()

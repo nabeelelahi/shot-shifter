@@ -148,4 +148,19 @@ class Scene extends Model
 
         return $records;
     }
+
+    public static function getAllScenes($params)
+    {
+        $params['mode'] = !empty($params['mode']) ? $params['mode'] : 'story';
+        $query = self::with(['shotList','breaks'])
+                        ->where('shot_list_id',$params['shot_list_id']);
+
+        if( $params['mode'] == 'story' ){
+            $query->orderBy('sort_order','asc');
+        } else {
+            $query->orderBy('shoot_sort_order','asc');
+        }
+        $records = $query->take(200)->get();
+        return $records;
+    }
 }

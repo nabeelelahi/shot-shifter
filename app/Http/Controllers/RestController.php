@@ -163,6 +163,7 @@ class RestController extends Controller
      */
     public function destroy($slug)
     {
+        $data = [];
         if(method_exists($this,'validation')){
             $validator = $this->validation('DELETE',$slug);
             if (!empty($validator) && $validator->fails()) {
@@ -182,11 +183,11 @@ class RestController extends Controller
         $this->loadModel()->deleteRecord($this->__request,$slug);
         //after load modal hook
         if( method_exists($this,'afterDestroyLoadModel'))
-            $this->afterDestroyLoadModel($this->__request,$slug);
+            $data = $this->afterDestroyLoadModel($this->__request,$slug);
         //init response
         $this->__is_paginate = false;
         $this->__collection  = false;
-        return $this->__sendResponse([],200,$this->__success_delete_message);
+        return $this->__sendResponse(!empty($data) ? $data : [],200,$this->__success_delete_message);
     }
 
     /**
