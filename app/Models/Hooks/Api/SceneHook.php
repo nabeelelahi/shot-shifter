@@ -60,7 +60,13 @@ class SceneHook
         if( !empty($postdata['image_url']) ){
             $postdata['image_url'] = CustomHelper::uploadMedia('scene',$postdata['image_url']);
         }
-        $postdata['scene_no']   = ($getSortorder->total_scene + 1);
+        if( empty($getSortorder->total_scene) ){
+            $scene_no = ($getSortorder->total_scene + 1);
+        } else {
+            $data     = json_decode(file_get_contents(public_path('scene_no.json')),true);
+            $scene_no = ($data['last_scene_no'] + 1);
+        }
+        $postdata['scene_no']   = $scene_no;
         $postdata['sort_order'] = ($getSortorder->sort_order + 1);
         $postdata['shoot_sort_order'] = ($getSortorder->shoot_sort_order + 1);
         $postdata['user_id']    = $request['user']->id;
@@ -78,6 +84,10 @@ class SceneHook
     public function hook_after_add($request,$record)
     {
         \DB::table('shot_list')->where('id',$record->shot_list_id)->increment('total_scene',1);
+        $data = [
+            'last_scene_no' => $record->scene_no
+        ];
+        file_put_contents(public_path('scene_no.json'),json_encode($data));
     }
 
     /*
@@ -131,27 +141,27 @@ class SceneHook
     */
     public function hook_after_delete($request,$records)
     {
-        if( count($records) ){
-            foreach( $records as $record ){
-                \DB::table('shot_list')->where('id',$record->shot_list_id)->decrement('total_scene', 1);
-                $scenes = $this->_model->where('id','>',$record->id)->get();
-                if( count($scenes) ){
-                    $scene_no = $record->scene_no;
-                    $cases = [];
-                    $data  = [];
-                    $ids   = [];
-                    foreach( $scenes as $scene ){
-                        $cases[]  = "WHEN {$scene->id} then ?";
-                        $data[]   = $scene_no;
-                        $ids[]    = $scene->id;
-                        $scene_no++;
-                    }
-                    $ids = implode(',', $ids);
-                    $cases = implode(' ', $cases);
-                    \DB::update("UPDATE scenes SET `scene_no` = CASE `id` {$cases} END WHERE `id` in ({$ids})", $data);
-                }
-            }
-        }
+        // if( count($records) ){
+        //     foreach( $records as $record ){
+        //         \DB::table('shot_list')->where('id',$record->shot_list_id)->decrement('total_scene', 1);
+        //         $scenes = $this->_model->where('id','>',$record->id)->get();
+        //         if( count($scenes) ){
+        //             $scene_no = $record->scene_no;
+        //             $cases = [];
+        //             $data  = [];
+        //             $ids   = [];
+        //             foreach( $scenes as $scene ){
+        //                 $cases[]  = "WHEN {$scene->id} then ?";
+        //                 $data[]   = $scene_no;
+        //                 $ids[]    = $scene->id;
+        //                 $scene_no++;
+        //             }
+        //             $ids = implode(',', $ids);
+        //             $cases = implode(' ', $cases);
+        //             \DB::update("UPDATE scenes SET `scene_no` = CASE `id` {$cases} END WHERE `id` in ({$ids})", $data);
+        //         }
+        //     }
+        // }
     }
 
     public function create_cache_signature($request)
