@@ -186,7 +186,7 @@ class RestController extends Controller
             $data = $this->afterDestroyLoadModel($this->__request,$slug);
         //init response
         $this->__is_paginate = false;
-        $this->__collection  = false;
+        //$this->__collection  = false;
         return $this->__sendResponse(!empty($data) ? $data : [],200,$this->__success_delete_message);
     }
 
