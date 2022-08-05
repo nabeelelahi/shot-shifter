@@ -83,6 +83,7 @@ class ShotList extends Model
     {
         $query = self::with('scenes.breaks','member')
                     ->where('id',$params['shot_list_id'])
+                    ->orderBy('sort_order','asc')
                     ->first();
         return $query;
     }
