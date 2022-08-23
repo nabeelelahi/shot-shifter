@@ -29,12 +29,12 @@
                 <tr style="border-bottom: 2px solid black">
                     <td style="padding: 15px;">
                         @if( !empty($scenes->image_url) )
-                            <a target="_blank" href="{{ Storage::url($scenes->image_url) }}">
-                                <img src="{{ public_path('storage/' . $scenes->image_url) }}" alt="{{ $scenes->title }}" style="width:200px;height:70px;object-fit:cover;">
+                            <a style="width:200px;height:100px;" target="_blank" href="{{ Storage::url($scenes->image_url) }}">
+                                <img src="{{ public_path('storage/' . $scenes->image_url) }}" alt="{{ $scenes->title }}" style="width:100%;height:100%;object-fit:cover;">
                             </a>
                         @else
-                            <a href="{{ URL::to('images/no-image-available.png') }}">
-                                <img style="width:200px;height:70px;object-fit:cover;" src="{{ public_path('images/no-image-available.png') }}" alt="{{ $scenes->title }}">
+                            <a target="_blank"  href="{{ URL::to('images/no-image-available.png') }}">
+                                <img style="width:100%;height:100%;object-fit:cover;" src="{{ public_path('images/no-image-available.png') }}" alt="{{ $scenes->title }}">
                             </a>
                         @endif
                     </td>
