@@ -19,10 +19,10 @@
             <th colspan="2"  style="text-align: right; padding: 30px 5px 3px 0; opacity: 0.8; " >SCENE </th>
             <th style="padding: 30px 0 3px 0; opacity: 0.8; ">SHOT</th>
             <th  style="text-align: left; padding: 30px 5px 5px 10px; opacity: 0.8; ">DESCRIPTION</th>
-            <th  style="text-align: left ; padding: 30px 10px 3px 10px;  opacity: 0.8;">SUBJECT</th>
+            <th  style="text-align: left ; padding: 30px 10px 3px 10px;  opacity: 0.8;">Sun Time</th>
             <th style="padding: 30px 5px 3px 0;  opacity: 0.8; ">CAMERA</th>
             <th style="padding: 30px 0 3px 0;  opacity: 0.8;">SHOT SIZE</th>
-            <th style="padding: 30px 5px 3px 0;  opacity: 0.8; ">SHOT TYPE</th>
+            <th style="padding: 30px 5px 3px 0;  opacity: 0.8; ">Location</th>
          </tr>
          @if( count($data->scenes) )
             @foreach( $data->scenes as $scenes )
@@ -37,10 +37,10 @@
                     <td style="text-align: right; padding: 15px;  opacity: 0.6;">{{ $scenes->scene_no }}</td>
                     <td style="text-align: right; padding: 15px;  opacity: 0.6;">{{ $loop->iteration }}</td>
                     <td style="padding: 15px;  opacity: 0.6;">{{ $scenes->description }}</td>
-                    <td style="padding: 15px;  opacity: 0.6;">{{ $scenes->scene_no }}</td>
+                    <td style="padding: 15px;  opacity: 0.6;">{{ $scenes->sun_time }}</td>
                     <td style="padding: 15px;  opacity: 0.6;">{{ $scenes->camera }}</td>
                     <td style="text-align: center; padding: 15px;  opacity: 0.6;">{{ $scenes->size }}</td>
-                    <td style="padding: 15px; text-align: center;  opacity: 0.6;">{{ $scenes->scene_no }}</td>
+                    <td style="padding: 15px; text-align: center;  opacity: 0.6;">{{ $scenes->location }}</td>
                 </tr>
             @endforeach
          @else
