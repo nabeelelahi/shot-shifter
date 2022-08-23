@@ -12,26 +12,30 @@
             <td colspan="4">{{ date('m-d-Y, h:i A',strtotime($data->created_at)) }}</td>
             <td colspan="4" align="right">StudioBinder: Storyboard & Shot List</td>
          </tr>
-         <tr >
-            <td colspan="8" style="border-bottom:2px solid black; padding:20px 0;">{{ $data->name }} <span style="margin-left:10px;border: 1px solid grey ; border-radius: 10px; font-size: 10px !important; padding: 3px; background-color: rgb(243, 236, 236); ">{{ $data->total_scene }} SHOTS</span></td>
+         <tr>
+            <td colspan="8" style="border-bottom:2px solid black; padding:20px 0;">{{ $data->name }} <span style="display:inline-block;margin-top:5px:margin-left:10px;border: 1px solid grey; border-radius: 10px; font-size: 10px !important; padding: 5px; background-color: rgb(243, 236, 236); ">{{ $data->total_scene }} SHOTS</span></td>
          </tr>
          <tr  style="border-bottom: 2px solid rgb(165, 165, 165); ">
             <th colspan="2"  style="text-align: right; padding: 30px 5px 3px 0; opacity: 0.8; " >SCENE </th>
             <th style="padding: 30px 0 3px 0; opacity: 0.8; ">SHOT</th>
             <th  style="text-align: left; padding: 30px 5px 5px 10px; opacity: 0.8; ">DESCRIPTION</th>
-            <th  style="text-align: left ; padding: 30px 10px 3px 10px;  opacity: 0.8;">Sun Time</th>
+            <th  style="text-align: left ; padding: 30px 10px 3px 10px;  opacity: 0.8;">SUN TIME</th>
             <th style="padding: 30px 5px 3px 0;  opacity: 0.8; ">CAMERA</th>
             <th style="padding: 30px 0 3px 0;  opacity: 0.8;">SHOT SIZE</th>
-            <th style="padding: 30px 5px 3px 0;  opacity: 0.8; ">Location</th>
+            <th style="padding: 30px 5px 3px 0;  opacity: 0.8; ">LOCATION</th>
          </tr>
          @if( count($data->scenes) )
             @foreach( $data->scenes as $scenes )
-                <tr style="border-bottom: 2px solid rgb(165, 165, 165);">
+                <tr style="border-bottom: 2px solid black">
                     <td style="padding: 15px;">
                         @if( !empty($scenes->image_url) )
-                            <img src="{{ public_path('storage/' . $scenes->image_url) }}" alt="{{ $scenes->title }}" style="width:200px;height:70px;object-fit:contain;">
+                            <a target="_blank" href="{{ Storage::url($scenes->image_url) }}">
+                                <img src="{{ public_path('storage/' . $scenes->image_url) }}" alt="{{ $scenes->title }}" style="width:200px;height:70px;object-fit:cover;">
+                            </a>
                         @else
-                            <img style="width:200px;height:70px;object-fit:contain;" src="{{ public_path('images/no-image-available.png') }}" alt="{{ $scenes->title }}">
+                            <a href="{{ URL::to('images/no-image-available.png') }}">
+                                <img style="width:200px;height:70px;object-fit:cover;" src="{{ public_path('images/no-image-available.png') }}" alt="{{ $scenes->title }}">
+                            </a>
                         @endif
                     </td>
                     <td style="text-align: right; padding: 15px;  opacity: 0.6;">{{ $scenes->scene_no }}</td>
@@ -48,9 +52,10 @@
                 <td colspan="8">No Scene Found</td>
             </tr>
          @endif
-
          <tr style="border-bottom: 2px solid rgb(165, 165, 165);">
-            <td colspan="8" style="text-align: center; padding: 30px;background-color: rgb(39, 39, 39); color: aliceblue;"  >End of Setup 1 of 1— Exterior Car</td>
+            <td colspan="8" style="text-align: center; padding: 30px;background-color: rgb(39, 39, 39); color: aliceblue;"  >
+                End of Shotlist | {{ $data->name }}
+            </td>
          </tr>
       </table>
    </body>
