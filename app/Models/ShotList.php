@@ -28,7 +28,7 @@ class ShotList extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'name', 'slug', 'image_url', 'description', 'is_lock', 'is_pin', 'sort_order', 'status',
+        'user_id', 'name', 'slug', 'image_url', 'description', 'is_lock', 'schedule_lock', 'is_pin', 'sort_order', 'status',
         'total_scene', 'total_completed_scene', 'created_at', 'updated_at', 'deleted_at'
     ];
 

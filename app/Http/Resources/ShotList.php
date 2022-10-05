@@ -29,6 +29,7 @@ class ShotList extends JsonResource
            'image_url'   => !empty($this->image_url) ? Storage::url($this->image_url) : NULL,
            'description' => $this->description,
            'is_lock'     => $this->is_lock,
+           'schedule_lock' => $this->schedule_lock,
            'is_pin'      => !empty($this->is_user_pin) ? 1 : 0,
            'sort_order'  => $this->sort_order,
            'status'      => $this->status,
