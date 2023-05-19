@@ -10,6 +10,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Api\UserMemberShotListController;
 use App\Http\Controllers\Api\UserMemberController;
 use App\Http\Controllers\Api\UserSubscriptionController;
+use App\Http\Controllers\Api\EventController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,6 +45,8 @@ Route::middleware(['api_authorization'])->group(function(){
         Route::resource('break', BreaksController::class)->only(['store','destroy']);
         Route::resource('member',UserMemberShotListController::class)->only(['index','store','destroy']);
         Route::resource('team', UserMemberController::class)->only(['index','store']);
+
+        Route::resource('event',EventController::class);
 
         Route::get('notification',[NotificationController::class,'index']);
         Route::put('notification/{any}',[NotificationController::class,'update']);

@@ -30,6 +30,7 @@ class SceneController extends RestController
         switch ($action){
             case 'POST':
                 $validator = Validator::make($this->__request->all(), [
+                    'event_id'     => 'required',
                     'shot_list_id' => 'required',
                     'image_url'    => 'image|max:10240',
                 ]);
@@ -37,7 +38,7 @@ class SceneController extends RestController
             case 'PUT':
                 $validator = Validator::make($this->__request->all(), [
                     'shot_list_id' => 'required|exists:shot_list,id',
-                    'image_url' => 'image|max:10240',
+                    'image_url'    => 'image|max:10240',
                 ]);
                 break;
         }
@@ -184,5 +185,29 @@ class SceneController extends RestController
 
         $this->__is_paginate   = false;
         return $this->__sendResponse($records,200,__('app.success_listing_message'));
+    }
+
+    public function index()
+    {
+        $request = $this->__request ;
+        $records = Scene::getEventScenes($request);
+
+        $this->__is_paginate = false;
+        $this->__collection  = false;
+
+        return $this->__sendResponse($records,200,'Scenes retrieved successfully');
+    }
+
+    public function show($slug)
+    {
+        $request = $this->__request ;
+        $record = Scene::getEventScenes($request,$slug);
+        if( count($record) ){
+            $record = $record[0];
+        }
+        $this->__is_paginate = false;
+        $this->__collection  = false;
+
+        return $this->__sendResponse($record,200,'Scene retrieved successfully');
     }
 }

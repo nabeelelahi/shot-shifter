@@ -27,7 +27,7 @@ class Scene extends Model
      * @var array
      */
     protected $fillable = [
-        'shot_list_id', 'size', 'title', 'slug', 'image_url', 'description', 'angle', 'lens', 'internal_external',
+        'event_id','shot_list_id', 'size', 'title', 'slug', 'image_url', 'description', 'angle', 'lens', 'internal_external',
         'sun_time', 'location', 'location_pin', 'cast', 'wardrobe', 'props', 'action', 'speed', 'sound', 'timepicker',
         'grip','lines_dialogue_english', 'lines_dialogue_foreign', 'camera', 'is_complete', 'sort_order', 'shoot_sort_order',
         'scene_no', 'status', 'created_at', 'updated_at', 'deleted_at'
@@ -162,5 +162,43 @@ class Scene extends Model
         }
         $records = $query->take(200)->get();
         return $records;
+    }
+
+    public static function getEventScenes($request,$slug=NULL)
+    {
+        $query = Event::select('events.*')
+            ->with(['scenes' => function($relQuery){
+                $relQuery->with(['breaks']);
+            }])
+            ->join('scenes','scenes.event_id','=','events.id');
+
+        if( !empty($request['shot_list_id']) ){
+            $query->where('shot_list_id',$request['shot_list_id']);
+        }
+
+        if( !empty($request['keyword']) ){
+            $keyword = $request['keyword'];
+            $query->where( function($where) use ($keyword){
+                $where->orWhere('scenes.title','like',"%$keyword%");
+                $where->orWhere('scenes.description','like',"%$keyword%");
+            });
+        }
+
+        if( !empty($slug) ){
+            $query->where('scenes.slug',$slug);
+        }
+
+        if( !empty($request['mode']) ){
+            if( $request['mode'] == 'story' ){
+                $query->orderBy('scenes.sort_order','asc');
+            } else {
+                $query->orderBy('scenes.shoot_sort_order','asc');
+            }
+        } else {
+            $query->orderBy('scenes.sort_order','asc');
+        }
+
+        $query = $query->get();
+        return $query;
     }
 }
