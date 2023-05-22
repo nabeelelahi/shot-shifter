@@ -25,6 +25,7 @@ class HomeController extends Controller
             \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
             \DB::table('breaks')->truncate();
+            \DB::table('events')->truncate();
             \DB::table('media')->truncate();
             \DB::table('notification')->truncate();
             \DB::table('notification_setting')->truncate();
