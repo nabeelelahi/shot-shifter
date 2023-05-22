@@ -172,6 +172,7 @@ class SceneController extends RestController
     public function reOrderRecord()
     {
         $request = $this->__request;
+        $param_rule['event_id']       = 'required|numeric';
         $param_rule['shot_list_id']   = 'required|numeric';
         $param_rule['scene_id']       = 'required|numeric';
         $param_rule['old_sort_order'] = 'required|numeric';
@@ -181,9 +182,11 @@ class SceneController extends RestController
         if( $this->__is_error )
             return $response;
 
-        $records = Scene::reOrderRecords($request->all());
+        $records = Scene::reOrderRecords($request->all(),$request);
 
-        $this->__is_paginate   = false;
+        $this->__is_paginate = false;
+        $this->__collection  = false;
+
         return $this->__sendResponse($records,200,__('app.success_listing_message'));
     }
 
@@ -200,14 +203,77 @@ class SceneController extends RestController
 
     public function show($slug)
     {
-        $request = $this->__request ;
+        $request = $this->__request;
         $record = Scene::getEventScenes($request,$slug);
         if( count($record) ){
             $record = $record[0];
         }
+
         $this->__is_paginate = false;
         $this->__collection  = false;
 
         return $this->__sendResponse($record,200,'Scene retrieved successfully');
+    }
+
+    public function store()
+    {
+        $request = $this->__request;
+        $param_rules['event_id']     = 'required';
+        $param_rules['shot_list_id'] = 'required';
+        $param_rules['image_url']    = 'required';
+
+        $response = $this->__validateRequestParams($request->all(),$param_rules);
+
+        if( $this->__is_error )
+            return $response;
+
+        $record = Scene::createScene($request,$this->loadModel()->fill($request->all()));
+
+        $this->__is_paginate = false;
+        $this->__collection  = false;
+
+        return $this->__sendResponse($record,200,'Scene created successfully');
+    }
+
+    public function update($slug)
+    {
+        $request = $this->__request;
+        $param_rules['event_id']     = 'required';
+        $param_rules['shot_list_id'] = 'required';
+
+        $response = $this->__validateRequestParams($request->all(),$param_rules);
+
+        if( $this->__is_error )
+            return $response;
+
+        $record = Scene::updateScene($request,$this->loadModel()->fill($request->all()),$slug);
+
+        $this->__is_paginate = false;
+        $this->__collection  = false;
+
+        return $this->__sendResponse($record,200,'Scene updated successfully');
+    }
+
+    public function destroy($slug)
+    {
+        $request = $this->__request;
+        $param_rules['event_id']     = 'required';
+        $param_rules['shot_list_id'] = 'required';
+
+        $response = $this->__validateRequestParams($request->all(),$param_rules);
+
+        if( $this->__is_error )
+            return $response;
+
+        //delete scene
+        Scene::where('slug',$slug)->delete();
+
+        //get all event scenes
+        $records = Scene::getEventScenes($request);
+
+        $this->__is_paginate = false;
+        $this->__collection  = false;
+
+        return $this->__sendResponse($records,200,'Scene deleted successfully');
     }
 }
