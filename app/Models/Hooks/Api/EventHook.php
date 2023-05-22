@@ -36,7 +36,7 @@ class EventHook
     public function hook_before_add($request,&$postdata)
     {
         $postdata['user_id'] = $request['user']->id;
-        $postdata['slug']    = $request['user']->id . uniqid(time());
+        $postdata['slug']    = $request['user']->id . time() . uniqid();
         $postdata['created_at'] = Carbon::now();
     }
 
