@@ -220,7 +220,7 @@ class SceneController extends RestController
         $request = $this->__request;
         $param_rules['event_id']     = 'required';
         $param_rules['shot_list_id'] = 'required';
-        $param_rules['image_url']    = 'required';
+        //$param_rules['image_url']    = 'required';
 
         $response = $this->__validateRequestParams($request->all(),$param_rules);
 
