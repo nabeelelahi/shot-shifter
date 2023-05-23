@@ -242,7 +242,7 @@ class Scene extends Model
         $params = [
             'shot_list_id' => $record->shot_list_id
         ];
-        $record = self::getEventScenes($params);
+        //$record = self::getEventScenes($params);
 
         return $record;
     }
