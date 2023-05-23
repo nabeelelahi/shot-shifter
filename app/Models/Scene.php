@@ -182,6 +182,10 @@ class Scene extends Model
                 } else {
                     $relQuery->orderBy('scenes.sort_order','asc');
                 }
+
+                if( !empty($request['shot_list_id']) ){
+                    $relQuery->where('scenes.shot_list_id',$request['shot_list_id']);
+                }
             }])
             ->join('scenes','scenes.event_id','=','events.id');
 
