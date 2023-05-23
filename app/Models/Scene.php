@@ -205,7 +205,7 @@ class Scene extends Model
             $query->where('scenes.slug',$slug);
         }
 
-        $query = $query->orderBy('date','asc')->take(50)->get();
+        $query = $query->groupBy('events.id')->orderBy('date','asc')->take(50)->get();
         return $query;
     }
 
