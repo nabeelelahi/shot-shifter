@@ -171,7 +171,7 @@ class Scene extends Model
     {
         $query = Event::select('events.*')
             ->with(['scenes' => function($relQuery) use ($request){
-                $relQuery->with(['breaks']);
+                $relQuery->with(['shotList','breaks']);
 
                 if( !empty($request['mode']) ){
                     if( $request['mode'] == 'story' ){
