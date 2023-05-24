@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class Scene extends JsonResource
 {
@@ -20,7 +21,7 @@ class Scene extends JsonResource
            'size'                   => $this->size,
            'title'                  => $this->title,
            'slug'                   => $this->slug,
-           'image_url'              => $this->image_url,
+           'image_url'              => !empty($this->image_url) ? Storage::url($this->image_url) : NULL,
            'description'            => $this->description,
            'angle'                  => $this->angle,
            'lens'                   => $this->lens,
@@ -44,8 +45,7 @@ class Scene extends JsonResource
            'schedule_sort_order' => $this->shoot_sort_order,
            'scene_no'    => $this->scene_no,
            'created_at'  => $this->created_at,
-           'shot_list'   => new ShotList($this->whenLoaded('shotList')),
-           'breaks'      => $this->whenLoaded('breaks'),
+           'breaks'      => $this->breaks,
        ];
     }
 }

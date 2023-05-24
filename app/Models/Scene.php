@@ -243,7 +243,6 @@ class Scene extends Model
             'shot_list_id' => $record->shot_list_id
         ];
         //$record = self::getEventScenes($params);
-
         return $record;
     }
 
@@ -259,8 +258,9 @@ class Scene extends Model
         $params = [
             'shot_list_id' => $request->shot_list_id
         ];
-        $record = self::getEventScenes($params);
+        //$record = self::getEventScenes($params);
 
+        $record = self::where('slug',$slug)->first();
         return $record;
     }
 }

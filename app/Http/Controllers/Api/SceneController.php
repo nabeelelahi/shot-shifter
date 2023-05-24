@@ -229,8 +229,8 @@ class SceneController extends RestController
 
         $record = Scene::createScene($request,$this->loadModel()->fill($request->all()));
 
-        $this->__is_paginate = false;
-        $this->__collection  = false;
+        $this->__is_paginate   = false;
+        $this->__is_collection = false;
 
         return $this->__sendResponse($record,200,'Scene created successfully');
     }
@@ -248,8 +248,8 @@ class SceneController extends RestController
 
         $record = Scene::updateScene($request,$this->loadModel()->fill($request->all()),$slug);
 
-        $this->__is_paginate = false;
-        $this->__collection  = false;
+        $this->__is_paginate   = false;
+        $this->__is_collection = false;
 
         return $this->__sendResponse($record,200,'Scene updated successfully');
     }
