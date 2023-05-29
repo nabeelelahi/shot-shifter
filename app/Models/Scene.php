@@ -213,7 +213,12 @@ class Scene extends Model
     {
         $getSortorder = self::getMaxSortOrder($request['shot_list_id']);
         if( !empty($postdata['image_url']) ){
-            $postdata['image_url'] = CustomHelper::uploadMedia('scene',$postdata['image_url']);
+            if( $request->hasFile('image_url') ){
+                $postdata['image_url'] = CustomHelper::uploadMedia('scene',$postdata['image_url']);
+            } else {
+                $file_path = public_path('storage/scene/'.basename($postdata['image_url']));
+                $postdata['image_url'] = CustomHelper::uploadMediaByPath('scene',$file_path);
+            }
         }
         if( empty($getSortorder->total_scene) ){
             $scene_no = ($getSortorder->total_scene + 1);

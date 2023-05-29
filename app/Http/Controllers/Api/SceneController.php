@@ -226,7 +226,7 @@ class SceneController extends RestController
 
         if( $this->__is_error )
             return $response;
-
+        
         $record = Scene::createScene($request,$this->loadModel()->fill($request->all()));
 
         $this->__is_paginate   = false;
