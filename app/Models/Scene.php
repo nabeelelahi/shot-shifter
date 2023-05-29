@@ -204,7 +204,7 @@ class Scene extends Model
         if( !empty($slug) ){
             $query->where('scenes.slug',$slug);
         }
-
+        $query->whereNull('scenes.deleted_at');
         $query = $query->groupBy('events.id')->orderBy('date','asc')->take(50)->get();
         return $query;
     }
