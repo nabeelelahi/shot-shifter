@@ -185,7 +185,7 @@ class SceneController extends RestController
         $records = Scene::reOrderRecords($request->all(),$request);
 
         $this->__is_paginate = false;
-        $this->__collection  = false;
+        $this->__apiResource = 'EventScene';
 
         return $this->__sendResponse($records,200,__('app.success_listing_message'));
     }
