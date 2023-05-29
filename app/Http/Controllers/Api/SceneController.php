@@ -161,12 +161,12 @@ class SceneController extends RestController
         if( $this->__is_error )
             return $response;
 
-        $record = Scene::markAsComplete($request->all());
+        $records = Scene::markAsComplete($request->all());
 
-        $this->__is_collection = false;
-        $this->__is_paginate   = false;
+        $this->__apiResource = 'EventScene';
+        $this->__is_paginate = false;
 
-        return $this->__sendResponse($record,200,__('app.success_listing_message'));
+        return $this->__sendResponse($records,200,__('app.success_listing_message'));
     }
 
     public function reOrderRecord()
