@@ -269,7 +269,7 @@ class Scene extends Model
         ];
         //$record = self::getEventScenes($params);
 
-        $record = self::where('slug',$slug)->first();
+        $record = self::with(['shotList','breaks'])->where('slug',$slug)->first();
         return $record;
     }
 }

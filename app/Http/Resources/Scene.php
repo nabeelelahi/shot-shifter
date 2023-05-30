@@ -17,7 +17,7 @@ class Scene extends JsonResource
     {
        return [
            'id'                     => $this->id,
-           'shot_list'              => $this->whenLoaded('shotList'),
+           'shot_list'              => new ShotList($this->whenLoaded('shotList')),
            'shot_list_id'           => $this->shot_list_id,
            'event_id'               => $this->event_id,
            'size'                   => $this->size,
