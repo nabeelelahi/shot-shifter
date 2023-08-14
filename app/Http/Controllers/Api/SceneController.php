@@ -155,6 +155,7 @@ class SceneController extends RestController
 
     public function sceneComplete()
     {
+        $data = [];
         $request = $this->__request;
         $param_rule['scene_id'] = 'required|exists:scenes,id,is_complete,0';
 
@@ -163,11 +164,31 @@ class SceneController extends RestController
             return $response;
 
         $records = Scene::markAsComplete($request->all());
+        if( count($records) ){
+            foreach( $records as $record ){
+                //event array
+                $data[] = [
+                    'id'         => $record->id,
+                    'user_id'    => $record->user_id,
+                    'slug'       => $record->slug,
+                    'title'      => $record->title,
+                    'date'       => $record->date,
+                    'created_at' => $record->created_at,
+                    'type'       => 'event',
+                ];
+                if( count($record->scenes) ){
+                    foreach($record->scenes as $scenes){
+                        $scene_data = new ResourcesScene($scenes);
+                        $data[] = $scene_data;
+                    }
+                }
+            }
+        }
 
-        $this->__apiResource = 'EventScene';
+        $this->__collection = false;
         $this->__is_paginate = false;
 
-        return $this->__sendResponse($records,200,__('app.success_listing_message'));
+        return $this->__sendResponse($data,200,__('app.success_listing_message'));
     }
 
     public function reOrderRecord()
@@ -186,7 +207,6 @@ class SceneController extends RestController
             return $response;
 
         $records = Scene::reOrderRecords($request->all(),$request);
-
         if( count($records) ){
             foreach( $records as $record ){
                 //event array
@@ -210,7 +230,6 @@ class SceneController extends RestController
 
         $this->__is_paginate = false;
         $this->__collection  = false;
-
         return $this->__sendResponse($data,200,__('app.success_listing_message'));
     }
 
@@ -300,6 +319,7 @@ class SceneController extends RestController
 
     public function destroy($slug)
     {
+        $data = [];
         $request = $this->__request;
         $param_rules['event_id']     = 'required';
         $param_rules['shot_list_id'] = 'required';
@@ -314,10 +334,30 @@ class SceneController extends RestController
 
         //get all event scenes
         $records = Scene::getEventScenes($request);
+        if( count($records) ){
+            foreach( $records as $record ){
+                //event array
+                $data[] = [
+                    'id'         => $record->id,
+                    'user_id'    => $record->user_id,
+                    'slug'       => $record->slug,
+                    'title'      => $record->title,
+                    'date'       => $record->date,
+                    'created_at' => $record->created_at,
+                    'type'       => 'event',
+                ];
+                if( count($record->scenes) ){
+                    foreach($record->scenes as $scenes){
+                        $scene_data = new ResourcesScene($scenes);
+                        $data[] = $scene_data;
+                    }
+                }
+            }
+        }
 
         $this->__is_paginate = false;
-        $this->__apiResource = 'EventScene';
+        $this->__collection  = false;
 
-        return $this->__sendResponse($records,200,'Scene deleted successfully');
+        return $this->__sendResponse($data,200,'Scene deleted successfully');
     }
 }
