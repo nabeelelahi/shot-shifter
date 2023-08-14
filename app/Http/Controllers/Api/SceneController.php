@@ -172,6 +172,7 @@ class SceneController extends RestController
 
     public function reOrderRecord()
     {
+        $data = [];
         $request = $this->__request;
         $param_rule['old_event_id']   = 'required|numeric';
         $param_rule['new_event_id']   = 'required|numeric';
@@ -186,10 +187,31 @@ class SceneController extends RestController
 
         $records = Scene::reOrderRecords($request->all(),$request);
 
-        $this->__is_paginate = false;
-        $this->__apiResource = 'EventScene';
+        if( count($records) ){
+            foreach( $records as $record ){
+                //event array
+                $data[] = [
+                    'id'         => $record->id,
+                    'user_id'    => $record->user_id,
+                    'slug'       => $record->slug,
+                    'title'      => $record->title,
+                    'date'       => $record->date,
+                    'created_at' => $record->created_at,
+                    'type'       => 'event',
+                ];
+                if( count($record->scenes) ){
+                    foreach($record->scenes as $scenes){
+                        $scene_data = new ResourcesScene($scenes);
+                        $data[] = $scene_data;
+                    }
+                }
+            }
+        }
 
-        return $this->__sendResponse($records,200,__('app.success_listing_message'));
+        $this->__is_paginate = false;
+        $this->__collection  = false;
+
+        return $this->__sendResponse($data,200,__('app.success_listing_message'));
     }
 
     public function index()
