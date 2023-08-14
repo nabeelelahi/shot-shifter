@@ -173,7 +173,8 @@ class SceneController extends RestController
     public function reOrderRecord()
     {
         $request = $this->__request;
-        $param_rule['event_id']       = 'required|numeric';
+        $param_rule['old_event_id']   = 'required|numeric';
+        $param_rule['new_event_id']   = 'required|numeric';
         $param_rule['shot_list_id']   = 'required|numeric';
         $param_rule['scene_id']       = 'required|numeric';
         $param_rule['old_sort_order'] = 'required|numeric';
@@ -247,7 +248,7 @@ class SceneController extends RestController
 
         if( $this->__is_error )
             return $response;
-        
+
         $record = Scene::createScene($request,$this->loadModel()->fill($request->all()));
 
         $this->__is_paginate   = false;

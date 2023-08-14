@@ -143,16 +143,21 @@ class Scene extends Model
                 \DB::update("UPDATE scenes SET `shoot_sort_order` = CASE `id` {$cases} END WHERE `id` in ({$ids})", $data);
 
         }
-        // $query = self::with(['shotList','breaks'])
-        //                 ->where('shot_list_id',$params['shot_list_id']);
-        // if( $params['mode'] == 'story' ){
-        //     $query->orderBy('sort_order','asc');
-        // } else {
-        //     $query->orderBy('shoot_sort_order','asc');
-        // }
-        // $records = $query->take(200)->get();
 
-        $records = self::getEventScenes($request);
+        //update scene event id
+        if( $params['old_event_id'] != $params['new_event_id'] ){
+            \DB::table('scenes')
+                ->where('id',$params['scene_id'])
+                ->update([
+                    'event_id' => $params['new_event_id']
+                ]);
+        }
+
+        $scene_params = [
+            'mode'         => $params['mode'],
+            'shot_list_id' => $params['shot_list_id'],
+        ];
+        $records = self::getEventScenes($scene_params);
         return $records;
     }
 
