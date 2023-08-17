@@ -26,6 +26,7 @@ class Scene extends JsonResource
            'id'                     => $this->id,
            'type'                   => 'scene',
            'shot_list_id'           => $this->shot_list_id,
+           'shot_list'              => new ShotList($this->whenLoaded('shotList')),
            'event_id'               => $this->event_id,
            'size'                   => $this->size,
            'title'                  => $this->title,
