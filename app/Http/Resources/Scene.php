@@ -7,6 +7,13 @@ use Illuminate\Support\Facades\Storage;
 
 class Scene extends JsonResource
 {
+    private $_index_no;
+
+    function __construct($resource,$index_no=1)
+    {
+        parent::__construct($resource);
+        $this->_index_no = $index_no;
+    }
     /**
      * Transform the resource into an array.
      *
@@ -48,6 +55,7 @@ class Scene extends JsonResource
            'scene_no'    => $this->scene_no,
            'created_at'  => $this->created_at,
            'breaks'      => $this->breaks,
+           'index_no'    => $this->_index_no,
        ];
     }
 }

@@ -5,6 +5,7 @@ use App\Helpers\CustomHelper;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Http\Resources\Scene as ResourcesScene;
 
 class Scene extends Model
 {
@@ -178,6 +179,7 @@ class Scene extends Model
 
     public static function getEventScenes($request,$slug=NULL)
     {
+        $data = [];
         $query = Event::select('events.*')
             ->with(['scenes' => function($relQuery) use ($request){
                 $relQuery->with(['shotList','breaks']);
@@ -215,7 +217,33 @@ class Scene extends Model
         }
         $query->whereNull('scenes.deleted_at');
         $query = $query->groupBy('events.id')->orderBy('date','asc')->take(50)->get();
-        return $query;
+
+        if( count($query) ){
+            $event_sort_order = 1;
+            $scene_sort_order = 1;
+            foreach( $query as $record ){
+                //event array
+                $data[] = [
+                    'id'         => $record->id,
+                    'index_no' => $event_sort_order,
+                    'user_id'    => $record->user_id,
+                    'slug'       => $record->slug,
+                    'title'      => $record->title,
+                    'date'       => $record->date,
+                    'created_at' => $record->created_at,
+                    'type'       => 'event',
+                ];
+                if( count($record->scenes) ){
+                    foreach($record->scenes as $scenes){
+                        $scene_data = new ResourcesScene($scenes,$scene_sort_order);
+                        $data[] = $scene_data;
+                        $scene_sort_order++;
+                    }
+                }
+                $event_sort_order++;
+            }
+        }
+        return $data;
     }
 
     public static function createScene($request,$postdata)
