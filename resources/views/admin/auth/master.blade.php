@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex, nofollow">
-    <title>FixedPlus - Bootstrap Admin Dashboard Template</title>
+    <title>{{ env('APP_NAME') }} | Admin Panel</title>
     <link href="{{ asset('admin/assets/lib/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('admin/assets/scss/style.css') }}" rel="stylesheet">
     <style type="text/css">
