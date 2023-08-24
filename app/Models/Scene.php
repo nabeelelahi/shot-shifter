@@ -216,7 +216,7 @@ class Scene extends Model
             $query->where('scenes.slug',$slug);
         }
         $query->whereNull('scenes.deleted_at');
-        $query = $query->groupBy('events.id')->orderBy('date','asc')->take(50)->get();
+        $query = $query->groupBy('events.id')->orderBy('events.id','asc')->take(50)->get();
 
         if( count($query) ){
             $event_sort_order = 1;
