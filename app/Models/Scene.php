@@ -164,10 +164,15 @@ class Scene extends Model
 
     public static function getAllScenes($params)
     {
+        $unschedule     = !empty($params['is_unschedule']) ? 1 : 0;
+        $shot_list_id   = !empty($params['shot_list_id']) ? $params['shot_list_id'] : 0;
         $params['mode'] = !empty($params['mode']) ? $params['mode'] : 'story';
         $query = self::with(['shotList','breaks'])
-                        ->where('shot_list_id',$params['shot_list_id']);
+                        ->where('shot_list_id',$shot_list_id);
 
+        if( $unschedule == 1 ){
+            $query->where('event_id',0);
+        }
         if( $params['mode'] == 'story' ){
             $query->orderBy('sort_order','asc');
         } else {
@@ -263,6 +268,8 @@ class Scene extends Model
             $data     = json_decode(file_get_contents(public_path($request->shot_list_id . '_scene_no.json')),true);
             $scene_no = ($data['last_scene_no'] + 1);
         }
+
+        $postdata['event_id']   = !empty($request['day_id']) ? $request['day_id'] : 0;
         $postdata['scene_no']   = $scene_no;
         $postdata['sort_order'] = ($getSortorder->sort_order + 1);
         $postdata['shoot_sort_order'] = ($getSortorder->shoot_sort_order + 1);

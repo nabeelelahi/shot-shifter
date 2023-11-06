@@ -30,7 +30,6 @@ class SceneController extends RestController
         switch ($action){
             case 'POST':
                 $validator = Validator::make($this->__request->all(), [
-                    'event_id'     => 'required',
                     'shot_list_id' => 'required',
                     'image_url'    => 'image|max:10240',
                 ]);
@@ -192,7 +191,13 @@ class SceneController extends RestController
     public function index()
     {
         $request = $this->__request ;
-        $records = Scene::getEventScenes($request);
+        $unschedule = !empty($request['is_unschedule']) ? 1 : 0;
+
+        if( $unschedule == 1 ){
+            $records = Scene::getAllScenes($request->all());
+        } else {
+            $records = Scene::getEventScenes($request);
+        }
 
         $this->__is_paginate = false;
         $this->__collection  = false;
@@ -216,9 +221,7 @@ class SceneController extends RestController
     public function store()
     {
         $request = $this->__request;
-        $param_rules['event_id']     = 'required';
         $param_rules['shot_list_id'] = 'required';
-        //$param_rules['image_url']    = 'required';
 
         $response = $this->__validateRequestParams($request->all(),$param_rules);
 

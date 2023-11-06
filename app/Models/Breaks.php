@@ -28,7 +28,7 @@ class Breaks extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'scene_id', 'name', 'slug', 'status', 'date', 'time',
+        'user_id', 'scene_id', 'name', 'sub_heading', 'slug', 'status', 'date', 'time',
         'created_at', 'updated_at', 'deleted_at'
     ];
 
