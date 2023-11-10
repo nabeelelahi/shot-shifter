@@ -24,12 +24,13 @@ class Scene extends JsonResource
     {
        return [
            'id'                     => $this->id,
-           'type'                   => 'scene',
+           'type'                   => $this->type,
            'shot_list_id'           => $this->shot_list_id,
            'shot_list'              => new ShotList($this->whenLoaded('shotList')),
-           'event_id'               => $this->event_id,
            'size'                   => $this->size,
            'title'                  => $this->title,
+           'date'                   => $this->date,
+           'sub_heading'            => $this->sub_heading,
            'slug'                   => $this->slug,
            'image_url'              => !empty($this->image_url) ? Storage::url($this->image_url) : NULL,
            'description'            => $this->description,

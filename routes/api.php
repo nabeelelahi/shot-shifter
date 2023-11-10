@@ -57,6 +57,5 @@ Route::middleware(['api_authorization'])->group(function(){
         Route::post('user-subscription',[UserSubscriptionController::class,'store']);
 
     });
-
     Route::post('truncate-data',[HomeController::class, 'truncateData']);
 });

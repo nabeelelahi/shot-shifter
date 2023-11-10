@@ -24,10 +24,13 @@ class SceneHook
    */
     public function hook_query_index(&$query,$request, $slug=NULL)
     {
-        $query->with(['shotList','breaks']);
+        $query->with(['shotList']);
 
         if( !empty($request['shot_list_id']) )
             $query->where('shot_list_id',$request['shot_list_id']);
+
+        if( !empty($request['type']) )
+            $query->where('type',$request['type']);
 
         if( !empty($request['keyword']) ){
             $keyword = $request['keyword'];
@@ -36,9 +39,12 @@ class SceneHook
                 $where->orWhere('description','like',"%$keyword%");
             });
         }
+        if( isset($request['is_schedule']) ){
+            $query->where('is_schedule',$request['is_schedule']);
+        }
         if( !empty($request['mode']) ){
             if( $request['mode'] == 'story' ){
-                $query->orderBy('sort_order','asc');
+                $query->orderBy('id','desc');
             } else {
                 $query->orderBy('shoot_sort_order','asc');
             }
@@ -56,19 +62,23 @@ class SceneHook
     */
     public function hook_before_add($request,&$postdata)
     {
+        $scene_no = 0;
         $getSortorder = $this->_model::getMaxSortOrder($request['shot_list_id']);
         if( !empty($postdata['image_url']) ){
             $postdata['image_url'] = CustomHelper::uploadMedia('scene',$postdata['image_url']);
         }
-        if( empty($getSortorder->total_scene) ){
-            $scene_no = ($getSortorder->total_scene + 1);
-        } else {
-            $data     = json_decode(file_get_contents(public_path($request->shot_list_id . '_scene_no.json')),true);
-            $scene_no = ($data['last_scene_no'] + 1);
+        if( $request['type'] != 'scene' ){
+            if( empty($getSortorder->total_scene) ){
+                $scene_no = ($getSortorder->total_scene + 1);
+            } else {
+                $data     = json_decode(file_get_contents(public_path($request->shot_list_id . '_scene_no.json')),true);
+                $scene_no = ($data['last_scene_no'] + 1);
+            }
         }
+
         $postdata['scene_no']   = $scene_no;
-        $postdata['sort_order'] = ($getSortorder->sort_order + 1);
-        $postdata['shoot_sort_order'] = ($getSortorder->shoot_sort_order + 1);
+        $postdata['sort_order'] = $request['type'] != 'scene' ? ($getSortorder->sort_order + 1) : 0;
+        $postdata['shoot_sort_order'] = $request['type'] != 'scene' ? ($getSortorder->shoot_sort_order + 1) : 0;
         $postdata['user_id']    = $request['user']->id;
         $postdata['slug']       = time() . uniqid();
         $postdata['created_at'] = Carbon::now();

@@ -30,13 +30,15 @@ class SceneController extends RestController
         switch ($action){
             case 'POST':
                 $validator = Validator::make($this->__request->all(), [
-                    'shot_list_id' => 'required',
+                    'shot_list_id' => 'required|numeric',
+                    'type'         => 'required|in:day,scene,event',
                     'image_url'    => 'image|max:10240',
                 ]);
                 break;
             case 'PUT':
                 $validator = Validator::make($this->__request->all(), [
                     'shot_list_id' => 'required|exists:shot_list,id',
+                    'type'         => 'required|in:day,scene,event',
                     'image_url'    => 'image|max:10240',
                 ]);
                 break;
@@ -71,10 +73,12 @@ class SceneController extends RestController
             $this->__is_error = true;
             return $this->__sendError('Validation Message',[ 'message' => 'Shot list id is not valid' ],400);
         }
-        if( $checkShotList->is_lock ){
-            $this->__is_error = true;
-            $message = 'You are not be able to add a scene because shot list has been locked';
-            return $this->__sendError('Validation Message',[ 'message' => $message ],400);
+        if( $request['type'] == 'scene' ){
+            if( $checkShotList->is_lock ){
+                $this->__is_error = true;
+                $message = 'You are not be able to add a scene because shot list has been locked';
+                return $this->__sendError('Validation Message',[ 'message' => $message ],400);
+            }
         }
     }
 
@@ -116,10 +120,12 @@ class SceneController extends RestController
             $this->__is_error = true;
             return $this->__sendError('Validation Message',[ 'message' => 'Shot list id is not valid' ],400);
         }
-        if( $checkShotList->is_lock ){
-            $this->__is_error = true;
-            $message = 'You are not be able to add a scene because shot list has been locked';
-            return $this->__sendError('Validation Message',[ 'message' => $message ],400);
+        if( $request['type'] == 'scene' ){
+            if( $checkShotList->is_lock ){
+                $this->__is_error = true;
+                $message = 'You are not be able to add a scene because shot list has been locked';
+                return $this->__sendError('Validation Message',[ 'message' => $message ],400);
+            }
         }
     }
 
@@ -188,6 +194,7 @@ class SceneController extends RestController
         return $this->__sendResponse($records,200,__('app.success_listing_message'));
     }
 
+    /*
     public function index()
     {
         $request = $this->__request ;
@@ -276,4 +283,5 @@ class SceneController extends RestController
         $this->__collection  = false;
         return $this->__sendResponse($records,200,'Scene deleted successfully');
     }
+    */
 }
