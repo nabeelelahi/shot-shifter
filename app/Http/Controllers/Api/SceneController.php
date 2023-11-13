@@ -32,14 +32,14 @@ class SceneController extends RestController
                 $validator = Validator::make($this->__request->all(), [
                     'shot_list_id' => 'required|numeric',
                     'type'         => 'required|in:day,scene,event',
-                    'image_url'    => 'image|max:10240',
+                    'image_url'    => 'sometimes|image|max:10240',
                 ]);
                 break;
             case 'PUT':
                 $validator = Validator::make($this->__request->all(), [
                     'shot_list_id' => 'required|exists:shot_list,id',
                     'type'         => 'required|in:day,scene,event',
-                    'image_url'    => 'image|max:10240',
+                    'image_url'    => 'sometimes|image|max:10240',
                 ]);
                 break;
         }
