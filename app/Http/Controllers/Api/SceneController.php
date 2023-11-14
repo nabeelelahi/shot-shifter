@@ -165,17 +165,50 @@ class SceneController extends RestController
     public function sceneComplete()
     {
         $request = $this->__request;
-        $param_rule['scene_id'] = 'required|exists:scenes,id,is_complete,0';
+        $param_rule['shot_list_id'] = 'required';
+        $param_rule['scene_id']     = 'required|exists:scenes,id,is_complete,0';
+        $param_rule['type']         = 'required|in:scene,day,event';
 
         $response = $this->__validateRequestParams($request->all(),$param_rule);
         if( $this->__is_error )
             return $response;
 
-        $records = Scene::markAsComplete($request->all());
+        Scene::markAsComplete($request->all());
 
-        $this->__collection = false;
+        $records = Scene::with(['shotList'])
+                        ->where('shot_list_id',$request['shot_list_id'])
+                        ->orderBy('shoot_sort_order','asc')
+                        ->take(1000)
+                        ->get();
+
+        $unschedule_records[] = [
+            'id'    => 0,
+            "shot_list_id" => 1,
+            'type'  => 'day',
+            'title' => 'unschedule'
+        ];
+        $schedule_record = [];
+        $final_data = [];
+        if( count($records) ){
+            foreach( $records as $record ){
+                if( $record->is_schedule == 1 ){
+                    $schedule_record[] = new SceneResource($record);
+                } else {
+                    $unschedule_records[] = new SceneResource($record);
+                }
+            }
+            if( count($unschedule_records) > 1 ){
+                $final_data = [...$schedule_record,...$unschedule_records];
+            } else {
+                $final_data = $schedule_record;
+            }
+        } else {
+            $final_data = $records;
+        }
+
         $this->__is_paginate = false;
-        return $this->__sendResponse($records,200,__('app.success_listing_message'));
+        $this->__collection = false;
+        return $this->__sendResponse($final_data,200,__('app.success_listing_message'));
     }
 
     /*

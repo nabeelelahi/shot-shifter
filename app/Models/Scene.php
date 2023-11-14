@@ -76,20 +76,12 @@ class Scene extends Model
                 'is_complete' => 1
             ]);
         // update complete counter
-        \DB::table('shot_list')
-            ->where('id',$params['shot_list_id'])
-            ->increment('total_completed_scene',1);
-        //get updated scene
-//         $getScene = self::with(['breaks'])
-//                         ->select('scenes.*')
-//                         ->where('id',$params['scene_id'])
-//                         ->first();
-        $scene_params = [
-            'shot_list_id' => $params['shot_list_id'],
-            'mode'         => $params['mode']
-        ];
-        $records = self::getEventScenes($scene_params);
-        return $records;
+        if( $params['type'] == 'scene' ){
+            \DB::table('shot_list')
+                ->where('id',$params['shot_list_id'])
+                ->increment('total_completed_scene',1);
+        }
+        return true;
     }
 
     public static function getMaxSortOrder($shot_list_id)
