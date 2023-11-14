@@ -55,8 +55,8 @@ class Scene extends JsonResource
            'sort_order'  => $this->sort_order,
            'schedule_sort_order' => $this->shoot_sort_order,
            'scene_no'    => $this->scene_no,
+           'is_schedule' => $this->is_schedule,
            'created_at'  => $this->created_at,
-           'breaks'      => $this->breaks,
            'index_no'    => $this->_index_no,
        ];
     }

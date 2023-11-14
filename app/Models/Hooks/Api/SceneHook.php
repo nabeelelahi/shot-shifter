@@ -29,9 +29,6 @@ class SceneHook
         if( !empty($request['shot_list_id']) )
             $query->where('shot_list_id',$request['shot_list_id']);
 
-        if( !empty($request['type']) )
-            $query->where('type',$request['type']);
-
         if( !empty($request['keyword']) ){
             $keyword = $request['keyword'];
             $query->where( function($where) use ($keyword){
@@ -42,6 +39,7 @@ class SceneHook
         if( isset($request['is_schedule']) ){
             $query->where('is_schedule',$request['is_schedule']);
         }
+
         if( !empty($request['mode']) ){
             if( $request['mode'] == 'story' ){
                 $query->orderBy('id','desc');
@@ -51,6 +49,8 @@ class SceneHook
         } else {
             $query->orderBy('sort_order','asc');
         }
+        //set default pagination limit
+        $request['limit'] = 1000;
     }
 
     /*
@@ -65,9 +65,14 @@ class SceneHook
         $scene_no = 0;
         $getSortorder = $this->_model::getMaxSortOrder($request['shot_list_id']);
         if( !empty($postdata['image_url']) ){
-            $postdata['image_url'] = CustomHelper::uploadMedia('scene',$postdata['image_url']);
+            if( $request->hasFile('image_url') ){
+                $postdata['image_url'] = CustomHelper::uploadMedia('scene',$postdata['image_url']);
+            } else {
+                $file_path = public_path('storage/scene/'.basename($postdata['image_url']));
+                $postdata['image_url'] = CustomHelper::uploadMediaByPath('scene',$file_path);
+            }
         }
-        if( $request['type'] != 'scene' ){
+        if( $request['type'] == 'scene' ){
             if( empty($getSortorder->total_scene) ){
                 $scene_no = ($getSortorder->total_scene + 1);
             } else {
@@ -76,8 +81,9 @@ class SceneHook
             }
         }
 
-        $postdata['scene_no']   = $scene_no;
-        $postdata['sort_order'] = $request['type'] != 'scene' ? ($getSortorder->sort_order + 1) : 0;
+        $postdata['scene_no']    = $scene_no;
+        $postdata['is_schedule'] = $request['type'] == 'scene' ? '0' : '1';
+        $postdata['sort_order']  = $request['type'] != 'scene' ? ($getSortorder->sort_order + 1) : 0;
         $postdata['shoot_sort_order'] = $request['type'] != 'scene' ? ($getSortorder->shoot_sort_order + 1) : 0;
         $postdata['user_id']    = $request['user']->id;
         $postdata['slug']       = time() . uniqid();
@@ -93,11 +99,13 @@ class SceneHook
     */
     public function hook_after_add($request,$record)
     {
-        \DB::table('shot_list')->where('id',$record->shot_list_id)->increment('total_scene',1);
-        $data = [
-            'last_scene_no' => $record->scene_no
-        ];
-        file_put_contents(public_path($record->shot_list_id . '_scene_no.json'),json_encode($data));
+        if( $request['type'] == 'scene' ){
+            \DB::table('shot_list')->where('id',$record->shot_list_id)->increment('total_scene',1);
+            $data = [
+                'last_scene_no' => $record->scene_no
+            ];
+            file_put_contents(public_path($record->shot_list_id . '_scene_no.json'),json_encode($data));
+        }
     }
 
     /*

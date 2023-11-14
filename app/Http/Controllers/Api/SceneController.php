@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\RestController;
 use App\Models\Scene;
 use App\Models\ShotList;
+use App\Http\Resources\Scene AS SceneResource;
 
 class SceneController extends RestController
 {
@@ -32,14 +33,18 @@ class SceneController extends RestController
                 $validator = Validator::make($this->__request->all(), [
                     'shot_list_id' => 'required|numeric',
                     'type'         => 'required|in:day,scene,event',
-                    'image_url'    => 'sometimes|image|max:10240',
                 ]);
                 break;
             case 'PUT':
                 $validator = Validator::make($this->__request->all(), [
                     'shot_list_id' => 'required|exists:shot_list,id',
                     'type'         => 'required|in:day,scene,event',
-                    'image_url'    => 'sometimes|image|max:10240',
+                ]);
+                break;
+            case 'INDEX':
+                $validator = Validator::make($this->__request->all(), [
+                    'shot_list_id' => 'required|exists:shot_list,id',
+                    'mode'         => 'required|in:story,schedule',
                 ]);
                 break;
         }
@@ -173,6 +178,7 @@ class SceneController extends RestController
         return $this->__sendResponse($records,200,__('app.success_listing_message'));
     }
 
+    /*
     public function reOrderRecord()
     {
         $request = $this->__request;
@@ -192,6 +198,124 @@ class SceneController extends RestController
         $this->__is_paginate = false;
         $this->__collection  = false;
         return $this->__sendResponse($records,200,__('app.success_listing_message'));
+    }
+    */
+
+    public function reOrderRecord()
+    {
+        $request   = $this->__request;
+        $json_data = $request->all();
+        if( count($json_data) ){
+            $sort_order = 1;
+            foreach($json_data as $scene){
+                if( $scene['title'] == 'unschedule' ){
+                    break;
+                }
+                $data[] = [
+                    'id' => $scene['id'],
+                    'shoot_sort_order' => $sort_order,
+                    'is_schedule' => '1'
+                ];
+                $sort_order++;
+            }
+            Scene::upsert($data,['id'],['shoot_sort_order','is_schedule']);
+        }
+
+        $records = Scene::with(['shotList'])
+                        ->where('shot_list_id',$json_data[0]['shot_list_id'])
+                        ->orderBy('shoot_sort_order','asc')
+                        ->take(1000)->get();
+
+        $unschedule_records[] = [
+            'id'    => 0,
+            "shot_list_id" => 1,
+            'type'  => 'day',
+            'title' => 'unschedule'
+        ];
+        $schedule_record = [];
+        $final_data = [];
+        if( count($records) ){
+            foreach( $records as $record ){
+                if( $record->is_schedule == 1 ){
+                    $schedule_record[] = new SceneResource($record);
+                } else {
+                    $unschedule_records[] = new SceneResource($record);
+                }
+            }
+            if( count($unschedule_records) > 1 ){
+                $final_data = [...$schedule_record,...$unschedule_records];
+            } else {
+                $final_data = $schedule_record;
+            }
+        } else {
+            $final_data = $records;
+        }
+
+        $this->__is_paginate = false;
+        $this->__collection = false;
+        return $this->__sendResponse($final_data,200,__('app.success_listing_message'));
+    }
+
+    public function index()
+    {
+        $request = $this->__request;
+        $param_rule['mode']         = 'required|in:story,schedule';
+        $param_rule['shot_list_id'] = 'required|exists:shot_list,id';
+
+        $response = $this->__validateRequestParams($request->all(),$param_rule);
+        if( $this->__is_error )
+            return $response;
+
+        $query = Scene::with(['shotList'])
+                    ->where('shot_list_id',$request['shot_list_id']);
+
+        if( !empty($request['keyword']) ){
+            $keyword = $request['keyword'];
+            $query->where( function($where) use ($keyword){
+                $where->orWhere('title','like',"%$keyword%");
+                $where->orWhere('description','like',"%$keyword%");
+            });
+        }
+
+        if( !empty($request['mode']) )
+        {
+            if( $request['mode'] == 'story' ){
+                $query->where('type','scene');
+                $query->orderBy('scene_no','asc');
+            }
+            if( $request['mode'] == 'schedule' ){
+                $query->orderBy('shoot_sort_order','asc');
+            }
+        }
+        $records = $query->take(1000)->get();
+        $unschedule_records[] = [
+            'id'    => 0,
+            "shot_list_id" => 1,
+            'type'  => 'day',
+            'title' => 'unschedule'
+        ];
+        $schedule_record = [];
+        $final_data = [];
+        if( count($records) && $request['mode'] == 'schedule' ){
+            foreach( $records as $record ){
+                if( $record->is_schedule == 1 ){
+                    $schedule_record[] = new SceneResource($record);
+                } else {
+                    $unschedule_records[] = new SceneResource($record);
+                }
+            }
+            if( count($unschedule_records) > 1 ){
+                $final_data = [...$schedule_record,...$unschedule_records];
+            } else {
+                $final_data = $schedule_record;
+            }
+        } else {
+            $final_data = $records;
+        }
+
+        $this->__is_paginate = false;
+        $this->__collection = false;
+        return $this->__sendResponse($final_data,200,__('app.success_listing_message'));
     }
 
     /*

@@ -33,7 +33,7 @@ class Scene extends Model
         'event_id','shot_list_id', 'type', 'size', 'title', 'slug', 'image_url', 'description', 'angle', 'lens', 'internal_external',
         'sun_time', 'location', 'location_pin', 'cast', 'wardrobe', 'props', 'action', 'speed', 'sound', 'timepicker', 'date', 'sub_heading',
         'grip','lines_dialogue_english', 'lines_dialogue_foreign', 'camera', 'is_complete', 'sort_order', 'shoot_sort_order',
-        'scene_no', 'status', 'created_at', 'updated_at', 'deleted_at'
+        'scene_no', 'is_schedule', 'status', 'created_at', 'updated_at', 'deleted_at'
     ];
 
     /**
@@ -94,7 +94,11 @@ class Scene extends Model
 
     public static function getMaxSortOrder($shot_list_id)
     {
-        $query = self::selectRaw('IFNULL(MAX(sort_order),0) AS sort_order, IFNULL(MAX(shoot_sort_order),0) AS shoot_sort_order, COUNT(*) AS total_scene')
+        $query = self::selectRaw('
+                        IFNULL(MAX(sort_order),0) AS sort_order,
+                        IFNULL(MAX(shoot_sort_order),0) AS shoot_sort_order,
+                        COUNT( case type when "scene" then 1 else null end) AS total_scene
+                    ')
                     ->where('shot_list_id',$shot_list_id)
                     ->first();
         return $query;
