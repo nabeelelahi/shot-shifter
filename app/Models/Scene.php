@@ -1,11 +1,9 @@
 <?php
 namespace App\Models;
 
-use App\Helpers\CustomHelper;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Http\Resources\Scene as ResourcesScene;
+use App\Http\Resources\Scene AS SceneResource;
 
 class Scene extends Model
 {
@@ -96,216 +94,76 @@ class Scene extends Model
         return $query;
     }
 
-    public static function reOrderRecords($params,$request)
+    public static function reOrderRecords($json_data)
     {
-        $api_data = [];
-        $sort_order_index = $params['old_sort_order'] > $params['new_sort_order'] ? $params['new_sort_order'] : $params['old_sort_order'];
-        $subtract_index   = $params['old_sort_order'] > $params['new_sort_order'] ? true : false;
-        $max_index        = $params['old_sort_order'] > $params['new_sort_order'] ? $params['old_sort_order'] : $params['new_sort_order'];
-
-        $query = self::with(['shotList','breaks'])
-                        ->where('shot_list_id',$params['shot_list_id']);
-        if( $params['mode'] == 'story' ){
-            $query->whereBetween('sort_order',[$sort_order_index,$max_index])
-                  ->orderBy('sort_order','asc');
-        } else {
-            $query->whereBetween('shoot_sort_order',[$sort_order_index,$max_index])
-                  ->orderBy('shoot_sort_order','asc');
-        }
-        $records = $query->get();
-        if( count($records) ){
-           foreach( $records as $record ){
-                if( $record->id == $params['scene_id'] ){
-                    $sort_order = $params['new_sort_order'];
-                } else {
-                    if( $params['mode'] == 'story' ){
-                        $sort_order = $subtract_index ? ($record->sort_order + 1) : ($record->sort_order - 1);
-                    } else {
-                        $sort_order = $subtract_index ? ($record->shoot_sort_order + 1) : ($record->shoot_sort_order - 1);
-                    }
+        if( count($json_data) ){
+            $sort_order = 1;
+            foreach($json_data as $scene){
+                if( $scene['title'] == 'unschedule' ){
+                    break;
                 }
-                $cases[]  = "WHEN {$record->id} then ?";
-                $data[]   = $sort_order;
-                $ids[]    = $record->id;
-                $record->sort_order = $sort_order;
-                $api_data[] = $record;
-
-                $sort_order_index++;
+                $data[] = [
+                    'id' => $scene['id'],
+                    'shoot_sort_order' => $sort_order,
+                    'is_schedule' => '1'
+                ];
+                $sort_order++;
             }
-            $ids = implode(',', $ids);
-            $cases = implode(' ', $cases);
-            if( $params['mode'] == 'story' )
-                \DB::update("UPDATE scenes SET `sort_order` = CASE `id` {$cases} END WHERE `id` in ({$ids})", $data);
-            else
-                \DB::update("UPDATE scenes SET `shoot_sort_order` = CASE `id` {$cases} END WHERE `id` in ({$ids})", $data);
-
+            self::upsert($data,['id'],['shoot_sort_order','is_schedule']);
         }
-
-        //update scene event id
-        if( $params['old_event_id'] != $params['new_event_id'] ){
-            \DB::table('scenes')
-                ->where('id',$params['scene_id'])
-                ->update([
-                    'event_id' => $params['new_event_id']
-                ]);
-        }
-
-        $scene_params = [
-            'mode'         => $params['mode'],
-            'shot_list_id' => $params['shot_list_id'],
-        ];
-        $records = self::getEventScenes($scene_params);
-        return $records;
     }
 
-    public static function getAllScenes($params)
+    public static function getAllScenes($shot_list_id,$mode,$keyword=NULL)
     {
-        $unschedule     = !empty($params['is_unschedule']) ? 1 : 0;
-        $shot_list_id   = !empty($params['shot_list_id']) ? $params['shot_list_id'] : 0;
-        $params['mode'] = !empty($params['mode']) ? $params['mode'] : 'story';
-        $query = self::with(['shotList','breaks'])
-                        ->where('shot_list_id',$shot_list_id);
+        $query = Scene::with(['shotList'])
+                    ->where('shot_list_id',$shot_list_id);
 
-        if( $unschedule == 1 ){
-            $query->where('event_id',0);
-        }
-        if( $params['mode'] == 'story' ){
-            $query->orderBy('sort_order','asc');
-        } else {
-            $query->orderBy('shoot_sort_order','asc');
-        }
-        $records = $query->take(200)->get();
-        return $records;
-    }
-
-    public static function getEventScenes($request,$slug=NULL)
-    {
-        $data = [];
-        $query = Event::select('events.*')
-            ->with(['scenes' => function($relQuery) use ($request){
-                $relQuery->with(['shotList','breaks']);
-
-                if( !empty($request['mode']) ){
-                    if( $request['mode'] == 'story' ){
-                        $relQuery->orderBy('scenes.sort_order','asc');
-                    } else {
-                        $relQuery->orderBy('scenes.shoot_sort_order','asc');
-                    }
-                } else {
-                    $relQuery->orderBy('scenes.sort_order','asc');
-                }
-
-                if( !empty($request['shot_list_id']) ){
-                    $relQuery->where('scenes.shot_list_id',$request['shot_list_id']);
-                }
-            }])
-            ->join('scenes','scenes.event_id','=','events.id');
-
-        if( !empty($request['shot_list_id']) ){
-            $query->where('shot_list_id',$request['shot_list_id']);
-        }
-
-        if( !empty($request['keyword']) ){
-            $keyword = $request['keyword'];
+        if( !empty($keyword) ){
             $query->where( function($where) use ($keyword){
-                $where->orWhere('scenes.title','like',"%$keyword%");
-                $where->orWhere('scenes.description','like',"%$keyword%");
+                $where->orWhere('title','like',"%$keyword%");
+                $where->orWhere('description','like',"%$keyword%");
             });
         }
 
-        if( !empty($slug) ){
-            $query->where('scenes.slug',$slug);
+        if( $mode == 'story' ){
+            $query->where('type','scene');
+            $query->orderBy('scene_no','asc');
         }
-        $query->whereNull('scenes.deleted_at');
-        $query = $query->groupBy('events.id')->orderBy('events.id','asc')->take(50)->get();
+        if( $mode == 'schedule' ){
+            $query->orderBy('shoot_sort_order','asc');
+        }
 
-        if( count($query) ){
-            $event_sort_order = 1;
-            $scene_sort_order = 1;
-            foreach( $query as $record ){
-                //event array
-                $data[] = [
-                    'id'         => $record->id,
-                    'index_no' => $event_sort_order,
-                    'user_id'    => $record->user_id,
-                    'slug'       => $record->slug,
-                    'title'      => $record->title,
-                    'date'       => $record->date,
-                    'created_at' => $record->created_at,
-                    'type'       => 'event',
-                ];
-                if( count($record->scenes) ){
-                    foreach($record->scenes as $scenes){
-                        $scene_data = new ResourcesScene($scenes,$scene_sort_order);
-                        $data[] = $scene_data;
-                        $scene_sort_order++;
-                    }
+        $records = $query->take(1000)->get();
+        return $records;
+    }
+
+    public static function sortScenes($scenes,$mode = 'schedule')
+    {
+        $unschedule_records[] = [
+            'id'    => 0,
+            "shot_list_id" => 1,
+            'type'  => 'day',
+            'title' => 'unschedule'
+        ];
+        $schedule_record = [];
+        $final_data = [];
+        if( count($scenes) && $mode == 'schedule' ){
+            foreach( $scenes as $record ){
+                if( $record->is_schedule == 1 ){
+                    $schedule_record[] = new SceneResource($record);
+                } else {
+                    $unschedule_records[] = new SceneResource($record);
                 }
-                $event_sort_order++;
             }
-        }
-        return $data;
-    }
-
-    public static function createScene($request,$postdata)
-    {
-        $getSortorder = self::getMaxSortOrder($request['shot_list_id']);
-        if( !empty($postdata['image_url']) ){
-            if( $request->hasFile('image_url') ){
-                $postdata['image_url'] = CustomHelper::uploadMedia('scene',$postdata['image_url']);
+            if( count($unschedule_records) > 1 ){
+                $final_data = [...$schedule_record,...$unschedule_records];
             } else {
-                $file_path = public_path('storage/scene/'.basename($postdata['image_url']));
-                $postdata['image_url'] = CustomHelper::uploadMediaByPath('scene',$file_path);
+                $final_data = $schedule_record;
             }
-        }
-        if( empty($getSortorder->total_scene) ){
-            $scene_no = ($getSortorder->total_scene + 1);
         } else {
-            $data     = json_decode(file_get_contents(public_path($request->shot_list_id . '_scene_no.json')),true);
-            $scene_no = ($data['last_scene_no'] + 1);
+            $final_data = $scenes;
         }
 
-        $postdata['event_id']   = !empty($request['day_id']) ? $request['day_id'] : 0;
-        $postdata['scene_no']   = $scene_no;
-        $postdata['sort_order'] = ($getSortorder->sort_order + 1);
-        $postdata['shoot_sort_order'] = ($getSortorder->shoot_sort_order + 1);
-        $postdata['user_id']    = $request['user']->id;
-        $postdata['slug']       = time() . uniqid();
-        $postdata['created_at'] = Carbon::now();
-
-        //create scene
-        $record = self::create($postdata->toArray());
-
-        //update shotlist scene number
-        \DB::table('shot_list')->where('id',$record->shot_list_id)->increment('total_scene',1);
-        $data = [
-            'last_scene_no' => $record->scene_no
-        ];
-        file_put_contents(public_path($record->shot_list_id . '_scene_no.json'),json_encode($data));
-
-        //get event scenes
-        $params = [
-            'shot_list_id' => $record->shot_list_id
-        ];
-        //$record = self::getEventScenes($params);
-        return $record;
-    }
-
-    public static function updateScene($request,$postData,$slug)
-    {
-        if( !empty($postData['image_url']) ){
-            $postData['image_url'] = CustomHelper::uploadMedia('scene',$postData['image_url']);
-        }
-        $postData['updated_at'] = Carbon::now();
-
-        self::where('slug',$slug)->update($postData->toArray());
-
-        $params = [
-            'shot_list_id' => $request->shot_list_id
-        ];
-        //$record = self::getEventScenes($params);
-
-        $record = self::with(['shotList','breaks'])->where('slug',$slug)->first();
-        return $record;
+        return $final_data;
     }
 }
