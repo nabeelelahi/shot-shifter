@@ -15,12 +15,15 @@ class CreateScenesTable extends Migration
     {
         Schema::create('scenes', function (Blueprint $table) {
             $table->id();
+            $table->enum('type',['day','scene','event']);
             $table->foreignId('shot_list_id')->constrained('shot_list')->onDelete('cascade');
             $table->string('size',150)->nullable();
             $table->string('title',150)->nullable();
             $table->string('slug',150)->unique();
             $table->text('image_url',5000)->nullable();
             $table->text('description',5000)->nullable();
+            $table->string('date')->nullable();
+            $table->string('sub_heading')->nullable();
             $table->string('angle',150)->nullable();
             $table->string('lens',150)->nullable();
             $table->string('internal_external',150)->nullable();
@@ -39,6 +42,9 @@ class CreateScenesTable extends Migration
             $table->string('camera',150)->nullable();
             $table->enum('is_complete',['1','0'])->default('0');
             $table->integer('sort_order')->nullable();
+            $table->integet('shoot_sort_order')->nullable();
+            $table->integer('scene_no')->nullable();
+            $table->enum('is_schedule',['1','0'])->default('0');
             $table->enum('status',['1','0'])->default('1');
             $table->timestamps();
             $table->softDeletes();

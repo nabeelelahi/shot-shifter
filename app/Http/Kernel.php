@@ -64,5 +64,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'custom_auth' => \App\Http\Middleware\CustomAuthentication::class,
         'api_authorization' => \App\Http\Middleware\ApiAuthorization::class,
+        'scene_activity' => \App\Http\Middleware\SceneScheduleActivity::class,
     ];
 }

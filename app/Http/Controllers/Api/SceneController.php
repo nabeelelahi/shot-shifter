@@ -221,4 +221,33 @@ class SceneController extends RestController
         $this->__collection = false;
         return $this->__sendResponse($scenes,200,__('app.success_listing_message'));
     }
+
+    public function destroy($slug)
+    {
+        $request = $this->__request;
+        $request->merge(['slug' => $slug]);
+        $param_rule['slug'] = [
+            Rule::exists('scenes','slug')->whereNull('deleted_at')
+        ];
+        $param_rule['shot_list_id'] = 'required';
+        $param_rule['mode']         = 'required|in:story,schedule';
+
+        $response = $this->__validateRequestParams($request->all(),$param_rule);
+        if( $this->__is_error )
+            return $response;
+
+        //delete scene
+        Scene::where('shot_list_id',$request['shot_list_id'])
+            ->where('slug',$slug)
+            ->delete();
+
+        //get updated scenes
+        $records = Scene::getAllScenes($request['shot_list_id'],$request['mode']);
+        //sort scene
+        $scenes = Scene::sortScenes($records,$request['mode']);
+
+        $this->__is_paginate = false;
+        $this->__collection = false;
+        return $this->__sendResponse($scenes,200,$this->__success_delete_message);
+    }
 }

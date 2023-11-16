@@ -39,11 +39,15 @@ Route::middleware(['api_authorization'])->group(function(){
 
         Route::get('shot-list/export',[ShotListController::class,'getPdf']);
         Route::resource('shot-list',ShotListController::class);
-        Route::post('scene/complete',[SceneController::class, 'sceneComplete']);
-        Route::post('scene/reorder',[SceneController::class, 'reOrderRecord']);
-        Route::resource('scene', SceneController::class);
+
+        Route::post('scene/complete',[SceneController::class, 'sceneComplete'])->name('scene.completed')->middleware('scene_activity');
+        Route::post('scene/reorder',[SceneController::class, 'reOrderRecord'])->name('scene.reorder')->middleware('scene_activity');
+        Route::resource('scene', SceneController::class)->middleware('scene_activity');
+
         Route::resource('break', BreaksController::class)->only(['store','destroy']);
+
         Route::resource('member',UserMemberShotListController::class)->only(['index','store','destroy']);
+
         Route::resource('team', UserMemberController::class)->only(['index','store']);
 
         Route::resource('event',EventController::class);
