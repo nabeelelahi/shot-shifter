@@ -19,6 +19,7 @@ class CreateUserMemberShotlistTable extends Migration
             $table->foreignId('actor_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('target_id')->constrained('users')->onDelete('cascade');
             $table->string('slug',100)->unique();
+            $table->enum('is_edit',['1','0'])->default('0');
             $table->timestamps();
             $table->softDeletes();
 
