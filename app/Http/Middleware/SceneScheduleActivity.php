@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Models\ScheduleActivity;
 use Carbon\Carbon;
 use Closure;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,21 +22,25 @@ class SceneScheduleActivity
     {
         $route_name = Route::currentRouteName();
         $response = $next($request);
-        //save activity
-        $data = $response->getData();
-        if( $data->code == 200 && strtolower($request->method()) != 'get' ){
-            if( in_array($route_name,['scene.store','scene.update']) ){
-                ScheduleActivity::sceneCreateActivity($request,$response);
+        try{
+            //save activity
+            $data = $response->getData();
+            if( $data->code == 200 && strtolower($request->method()) != 'get' ){
+                if( in_array($route_name,['scene.store','scene.update']) ){
+                    ScheduleActivity::sceneCreateActivity($request,$response);
+                }
+                if( $route_name == 'scene.destroy' ){
+                    ScheduleActivity::sceneDeleteActivity($request,$response);
+                }
+                if($route_name == 'scene.completed'){
+                    ScheduleActivity::sceneCompletedActivity($request,$response);
+                }
+                if($route_name == 'scene.reorder'){
+                    ScheduleActivity::sceneReOrderActivity($request,$response);
+                }
             }
-            if( $route_name == 'scene.destroy' ){
-                ScheduleActivity::sceneDeleteActivity($request,$response);
-            }
-            if($route_name == 'scene.completed'){
-                ScheduleActivity::sceneCompletedActivity($request,$response);
-            }
-            if($route_name == 'scene.reorder'){
-                ScheduleActivity::sceneReOrderActivity($request,$response);
-            }
+        } catch ( \Exception $e ){
+
         }
         //return response
         return $response;
