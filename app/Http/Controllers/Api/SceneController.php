@@ -208,7 +208,13 @@ class SceneController extends RestController
     public function reOrderRecord()
     {
         $request   = $this->__request;
-        $json_data = $request->all();
+        $param_rule['json_data'] = 'required';
+
+        $response = $this->__validateRequestParams($request->all(),$param_rule);
+        if( $this->__is_error )
+            return $response;
+
+        $json_data = $request['json_data'];
         //reorder scene
         Scene::reOrderRecords($json_data);
 
