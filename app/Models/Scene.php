@@ -191,7 +191,7 @@ class Scene extends Model
                 $final_data = $schedule_record;
             }
         } else {
-            $final_data = $scenes;
+            $final_data = SceneResource::collection($scenes);
         }
 
         return $final_data;
