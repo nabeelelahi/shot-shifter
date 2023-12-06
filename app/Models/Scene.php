@@ -185,7 +185,7 @@ class Scene extends Model
                     $unschedule_records[] = new SceneResource($record);
                 }
             }
-            if( count($unschedule_records) > 1 ){
+            if( count($unschedule_records) > 1 && $scenes[0]->shotList->schedule_lock == 0 ){
                 $final_data = [...$schedule_record,...$unschedule_records];
             } else {
                 $final_data = $schedule_record;
