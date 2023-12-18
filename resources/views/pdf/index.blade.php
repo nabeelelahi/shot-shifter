@@ -33,8 +33,8 @@
                                 <img src="{{ public_path('storage/' . $scenes->image_url) }}" alt="{{ $scenes->title }}" style="width:100%;height:100%;object-fit:contain;">
                             </a>
                         @else
-                            <a target="_blank"  href="{{ URL::to('images/no-image-available.png') }}">
-                                <img style="width:100%;height:100%;object-fit:cover;" src="{{ public_path('images/no-image-available.png') }}" alt="{{ $scenes->title }}">
+                            <a style="width:200px;height:100px;" target="_blank"  href="{{ URL::to('images/no-image-available.png') }}">
+                                <img src="{{ public_path('images/no-image-available.png') }}" alt="{{ $scenes->title }}" style="width:100%;height:100%;object-fit:contain;">
                             </a>
                         @endif
                     </td>
