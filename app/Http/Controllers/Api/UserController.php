@@ -31,6 +31,7 @@ class UserController extends RestController
      */
     public function validation($action,$slug=NULL)
     {
+        echo date('d-m-Y H:i:s'); exit;
         $validator = [];
         $custom_messages = [
             'password.regex' => __('app.password_regex')
@@ -103,6 +104,7 @@ class UserController extends RestController
      */
     public function beforeStoreLoadModel($request)
     {
+        
         if( env('VERIFICATION_TYPE') == 'mobile' ) {
             if( env('SMS_SANDBOX',1) != 1){
                 $sms = new Sms;

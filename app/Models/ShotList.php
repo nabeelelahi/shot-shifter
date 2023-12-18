@@ -81,7 +81,9 @@ class ShotList extends Model
 
     public static function exportShotList($params)
     {
-        $query = self::with('scenes.breaks','member')
+        $query = self::with(['member','scenes' => function($relQuery){
+                        $relQuery->where('type','scene');
+                    }])
                     ->where('id',$params['shot_list_id'])
                     ->orderBy('sort_order','asc')
                     ->first();

@@ -13,7 +13,7 @@
             <td colspan="4" align="right">StudioBinder: Storyboard & Shot List</td>
          </tr>
          <tr>
-            <td colspan="8" style="border-bottom:2px solid black; padding:20px 0;">{{ $data->name }} <span style="display:inline-block;margin-top:5px:margin-left:10px;border: 1px solid grey; border-radius: 10px; font-size: 10px !important; padding: 5px; background-color: rgb(243, 236, 236); ">{{ $data->total_scene }} SHOTS</span></td>
+            <td colspan="8" style="border-bottom:2px solid black; padding:20px 0;">{{ $data->name }} <span style="display:inline-block;margin-top:5px:margin-left:10px;border: 1px solid grey; border-radius: 10px; font-size: 10px !important; padding: 5px; background-color: rgb(243, 236, 236); ">{{ count($data->scenes) }} SHOTS</span></td>
          </tr>
          <tr  style="border-bottom: 2px solid rgb(165, 165, 165); ">
             <th colspan="2"  style="text-align: right; padding: 30px 5px 3px 0; opacity: 0.8; " >SCENE </th>
@@ -30,7 +30,7 @@
                     <td style="padding: 15px;">
                         @if( !empty($scenes->image_url) )
                             <a style="width:200px;height:100px;" target="_blank" href="{{ Storage::url($scenes->image_url) }}">
-                                <img src="{{ public_path('storage/' . $scenes->image_url) }}" alt="{{ $scenes->title }}" style="width:100%;height:100%;object-fit:cover;">
+                                <img src="{{ public_path('storage/' . $scenes->image_url) }}" alt="{{ $scenes->title }}" style="width:100%;height:100%;object-fit:contain;">
                             </a>
                         @else
                             <a target="_blank"  href="{{ URL::to('images/no-image-available.png') }}">
