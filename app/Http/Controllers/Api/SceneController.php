@@ -256,4 +256,50 @@ class SceneController extends RestController
         $this->__collection = false;
         return $this->__sendResponse($scenes,200,$this->__success_delete_message);
     }
+
+    public function sceneUndo()
+    {
+        $shot_list_id = 0;
+        $mode = 'schedule';
+        $request = $this->__request;
+        $last_activity = Scene::getLastActivity($request['user']->id);
+        if( empty($last_activity->id) ){
+            return $this->__sendError('Validation Message',['message' => 'Invalid request'],400);
+        }
+        //restore deleted record
+        if( $last_activity->action_name == 'scene.destroy' ){
+            $scene = json_decode($last_activity->response);
+            $shot_list_id = $scene->shot_list_id;
+            //restore delete scene
+            Scene::restoreScene($scene->id);
+        }
+        if( $last_activity->action_name == 'scene.completed' ){
+            $scene = json_decode($last_activity->request_payload);
+            $shot_list_id = $scene->shot_list_id;
+            //update scene record
+            Scene::where('id',$scene->scene_id)->update(['is_complete' => '0']);
+        }
+        if( $last_activity->action_name == 'scene.update' ){
+            $scene = json_decode($last_activity->old_record,true);
+            $shot_list_id = $scene['shot_list_id'];
+            //update scene record
+            Scene::restoreSceneUpdate($scene['id'],$scene);
+        }
+        if( $last_activity->action_name == 'scene.store' ){
+            $scene = json_decode($last_activity->response,true);
+            $shot_list_id = $scene['shot_list_id'];
+            //update scene record
+            Scene::where('id',$scene['id'])->delete();
+        }
+        //delete last activity
+        Scene::deleteLastActivity($last_activity->id);
+        //get updated scenes
+        $records = Scene::getAllScenes($shot_list_id,$mode);
+        //sort scene
+        $scenes = Scene::sortScenes($records,$mode);
+
+        $this->__is_paginate = false;
+        $this->__collection = false;
+        return $this->__sendResponse($scenes,200,$this->__success_delete_message);
+    }
 }

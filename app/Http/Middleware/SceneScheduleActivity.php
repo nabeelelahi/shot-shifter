@@ -20,14 +20,24 @@ class SceneScheduleActivity
      */
     public function handle(Request $request, Closure $next)
     {
+        $old_record = NULL;
         $route_name = Route::currentRouteName();
+        if( $route_name == 'scene.update' ){
+            $route_params = $request->route()->parameters();
+            $slug = $route_params['scene'];
+            $old_record = \DB::table('scenes')->where('slug',$slug)->first();
+            $old_record = json_encode($old_record);
+        }
         $response = $next($request);
         try{
             //save activity
             $data = $response->getData();
             if( $data->code == 200 && strtolower($request->method()) != 'get' ){
-                if( in_array($route_name,['scene.store','scene.update']) ){
+                if( $route_name == 'scene.store' ){
                     ScheduleActivity::sceneCreateActivity($request,$response);
+                }
+                if( $route_name == 'scene.update' ){
+                    ScheduleActivity::sceneUpdateActivity($request,$response,$old_record);
                 }
                 if( $route_name == 'scene.destroy' ){
                     ScheduleActivity::sceneDeleteActivity($request,$response);

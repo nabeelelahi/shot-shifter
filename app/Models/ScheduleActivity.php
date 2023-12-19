@@ -30,7 +30,7 @@ class ScheduleActivity extends Model
      */
     protected $fillable = [
         'user_id', 'scene_id', 'shot_list_id', 'http_verb', 'action_name', 'request_payload', 'response',
-        'created_at', 'updated_at', 'deleted_at'
+        'old_record', 'created_at', 'updated_at', 'deleted_at'
     ];
 
     /**
@@ -67,6 +67,23 @@ class ScheduleActivity extends Model
             'action_name' => Route::currentRouteName(),
             'request_payload' => json_encode($request->all()),
             'response' => json_encode($data->data),
+            'created_at' => Carbon::now(),
+        ]);
+        return true;
+    }
+
+    public static function sceneUpdateActivity($request,$response,$old_record)
+    {
+        $data = $response->getData();
+        ScheduleActivity::insert([
+            'user_id'  => $request['user']->id,
+            'scene_id' => $data->data->id,
+            'shot_list_id' => $data->data->shot_list_id,
+            'http_verb' => $request->method(),
+            'action_name' => Route::currentRouteName(),
+            'request_payload' => json_encode($request->all()),
+            'response' => json_encode($data->data),
+            'old_record' => $old_record,
             'created_at' => Carbon::now(),
         ]);
         return true;

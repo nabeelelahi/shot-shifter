@@ -196,4 +196,31 @@ class Scene extends Model
 
         return $final_data;
     }
+
+    public static function getLastActivity($user_id)
+    {
+        $query = \DB::table('schedule_activity')
+                    ->where('user_id',$user_id)
+                    ->orderBy('id','desc')
+                    ->first();
+        return $query;
+    }
+
+    public static function deleteLastActivity($last_activity_id)
+    {
+        \DB::table('schedule_activity')->where('id',$last_activity_id)->delete();
+        return true;
+    }
+
+    public static function restoreScene($scene_id)
+    {
+        self::onlyTrashed()->where('id', $scene_id)->restore();
+        return true;
+    }
+
+    public static function restoreSceneUpdate($scene_id,$old_record)
+    {
+        Scene::where('id',$scene_id)->update($old_record);
+        return true;
+    }
 }
