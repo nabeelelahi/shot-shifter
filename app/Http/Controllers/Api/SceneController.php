@@ -300,6 +300,27 @@ class SceneController extends RestController
 
         $this->__is_paginate = false;
         $this->__collection = false;
-        return $this->__sendResponse($scenes,200,$this->__success_delete_message);
+        return $this->__sendResponse($scenes,200,'Record retrieved successfully');
+    }
+
+    public function sceneReset()
+    {
+        $request = $this->__request;
+        $param_rule['shot_list_id'] = 'required';
+
+        $response = $this->__validateRequestParams($request->all(),$param_rule);
+        if( $this->__is_error )
+            return $response;
+
+        //reset scene
+        Scene::resetScene($request['shot_list_id']);
+        //get scenes
+        $records = Scene::getAllScenes($request['shot_list_id'],'schedule');
+        //sort scene
+        $scenes = Scene::sortScenes($records,'schedule');
+
+        $this->__is_paginate = false;
+        $this->__collection = false;
+        return $this->__sendResponse($scenes,200,'Records have been reset sucessfully');
     }
 }

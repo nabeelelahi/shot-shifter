@@ -220,7 +220,24 @@ class Scene extends Model
 
     public static function restoreSceneUpdate($scene_id,$old_record)
     {
-        Scene::where('id',$scene_id)->update($old_record);
+        self::where('id',$scene_id)->update($old_record);
+        return true;
+    }
+
+    public static function resetScene($shot_list_id)
+    {
+        ShotList::where('id',$shot_list_id)->update(['schedule_lock' => '0']);
+
+        self::where('shot_list_id',$shot_list_id)
+            ->whereIn('type',['day','event'])
+            ->forceDelete();
+
+        self::where('shot_list_id',$shot_list_id)
+            ->update([
+                    'is_complete' => '0',
+                    'is_schedule' => '0'
+                ]);
+
         return true;
     }
 }

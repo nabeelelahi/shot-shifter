@@ -40,6 +40,7 @@ Route::middleware(['api_authorization'])->group(function(){
         Route::get('shot-list/export',[ShotListController::class,'getPdf']);
         Route::resource('shot-list',ShotListController::class);
 
+        Route::post('scene/reset',[SceneController::class, 'sceneReset'])->name('scene-reset');
         Route::post('scene/undo',[SceneController::class, 'sceneUndo'])->name('scene-undo');
         Route::post('scene/complete',[SceneController::class, 'sceneComplete'])->name('scene.completed')->middleware('scene_activity');
         Route::post('scene/reorder',[SceneController::class, 'reOrderRecord'])->name('scene.reorder')->middleware('scene_activity');
