@@ -58,34 +58,38 @@ class ScheduleActivity extends Model
 
     public static function sceneCreateActivity($request,$response)
     {
-        $data = $response->getData();
-        ScheduleActivity::insert([
-            'user_id'  => $request['user']->id,
-            'scene_id' => $data->data->id,
-            'shot_list_id' => $data->data->shot_list_id,
-            'http_verb' => $request->method(),
-            'action_name' => Route::currentRouteName(),
-            'request_payload' => json_encode($request->all()),
-            'response' => json_encode($data->data),
-            'created_at' => Carbon::now(),
-        ]);
+        if( $request['type'] != 'scene' ){
+            $data = $response->getData();
+            ScheduleActivity::insert([
+                'user_id'  => $request['user']->id,
+                'scene_id' => $data->data->id,
+                'shot_list_id' => $data->data->shot_list_id,
+                'http_verb' => $request->method(),
+                'action_name' => Route::currentRouteName(),
+                'request_payload' => json_encode($request->all()),
+                'response' => json_encode($data->data),
+                'created_at' => Carbon::now(),
+            ]);
+        }
         return true;
     }
 
     public static function sceneUpdateActivity($request,$response,$old_record)
     {
-        $data = $response->getData();
-        ScheduleActivity::insert([
-            'user_id'  => $request['user']->id,
-            'scene_id' => $data->data->id,
-            'shot_list_id' => $data->data->shot_list_id,
-            'http_verb' => $request->method(),
-            'action_name' => Route::currentRouteName(),
-            'request_payload' => json_encode($request->all()),
-            'response' => json_encode($data->data),
-            'old_record' => $old_record,
-            'created_at' => Carbon::now(),
-        ]);
+        if( $request['type'] != 'scene' ){
+            $data = $response->getData();
+            ScheduleActivity::insert([
+                'user_id'  => $request['user']->id,
+                'scene_id' => $data->data->id,
+                'shot_list_id' => $data->data->shot_list_id,
+                'http_verb' => $request->method(),
+                'action_name' => Route::currentRouteName(),
+                'request_payload' => json_encode($request->all()),
+                'response' => json_encode($data->data),
+                'old_record' => $old_record,
+                'created_at' => Carbon::now(),
+            ]);
+        }
         return true;
     }
 
@@ -94,16 +98,18 @@ class ScheduleActivity extends Model
         $url   = explode('/',$request->url());
         $slug  = end($url);
         $scene = Scene::onlyTrashed()->where('slug',$slug)->first();
-        ScheduleActivity::insert([
-            'user_id'  => $request['user']->id,
-            'scene_id' => $scene->id,
-            'shot_list_id' => $scene->shot_list_id,
-            'http_verb' => $request->method(),
-            'action_name' => Route::currentRouteName(),
-            'request_payload' => json_encode($request->all()),
-            'response' => json_encode($scene),
-            'created_at' => Carbon::now(),
-        ]);
+        if( $scene->type != 'scene' ){
+            ScheduleActivity::insert([
+                'user_id'  => $request['user']->id,
+                'scene_id' => $scene->id,
+                'shot_list_id' => $scene->shot_list_id,
+                'http_verb' => $request->method(),
+                'action_name' => Route::currentRouteName(),
+                'request_payload' => json_encode($request->all()),
+                'response' => json_encode($scene),
+                'created_at' => Carbon::now(),
+            ]);
+        }
         return true;
     }
 
