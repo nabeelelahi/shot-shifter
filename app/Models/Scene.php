@@ -30,7 +30,7 @@ class Scene extends Model
     protected $fillable = [
         'event_id','shot_list_id', 'type', 'size', 'title', 'slug', 'image_url', 'description', 'angle', 'lens', 'internal_external',
         'sun_time', 'location', 'location_pin', 'cast', 'wardrobe', 'props', 'action', 'speed', 'sound', 'timepicker', 'date', 'sub_heading',
-        'grip','lines_dialogue_english', 'lines_dialogue_foreign', 'camera', 'is_complete', 'sort_order', 'shoot_sort_order',
+        'time','grip','lines_dialogue_english', 'lines_dialogue_foreign', 'camera', 'is_complete', 'sort_order', 'shoot_sort_order',
         'scene_no', 'is_schedule', 'status', 'created_at', 'updated_at', 'deleted_at'
     ];
 
