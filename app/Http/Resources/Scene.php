@@ -30,6 +30,7 @@ class Scene extends JsonResource
            'size'                   => $this->size,
            'title'                  => $this->title,
            'date'                   => $this->date,
+           'time'                   => $this->time,
            'sub_heading'            => $this->sub_heading,
            'slug'                   => $this->slug,
            'image_url'              => !empty($this->image_url) ? Storage::url($this->image_url) : NULL,
