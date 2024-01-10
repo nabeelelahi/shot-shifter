@@ -264,7 +264,7 @@ class SceneController extends RestController
         $request = $this->__request;
         $last_activity = Scene::getLastActivity($request['user']->id);
         if( empty($last_activity->id) ){
-            return $this->__sendError('Validation Message',['message' => 'Invalid request'],400);
+            return $this->__sendError('Validation Message',['message' => "You don't have any request to undo"],400);
         }
         //restore deleted record
         if( $last_activity->action_name == 'scene.destroy' ){
