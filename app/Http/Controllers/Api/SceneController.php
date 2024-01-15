@@ -262,7 +262,14 @@ class SceneController extends RestController
         $shot_list_id = 0;
         $mode = 'schedule';
         $request = $this->__request;
-        $last_activity = Scene::getLastActivity($request['user']->id);
+
+        $param_rule['shot_list_id'] = 'required';
+
+        $response = $this->__validateRequestParams($request->all(),$param_rule);
+        if( $this->__is_error )
+            return $response;
+
+        $last_activity = Scene::getLastActivity($request['user']->id,$request['shot_list_id']);
         if( empty($last_activity->id) ){
             return $this->__sendError('Validation Message',['message' => "You don't have any request to undo"],400);
         }

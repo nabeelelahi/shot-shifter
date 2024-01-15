@@ -197,9 +197,10 @@ class Scene extends Model
         return $final_data;
     }
 
-    public static function getLastActivity($user_id)
+    public static function getLastActivity($user_id,$shot_list_id)
     {
         $query = \DB::table('schedule_activity')
+                    ->where('shot_list_id',$shot_list_id)
                     ->where('user_id',$user_id)
                     ->orderBy('id','desc')
                     ->first();
