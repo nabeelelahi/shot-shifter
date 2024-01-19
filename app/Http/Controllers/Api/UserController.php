@@ -47,7 +47,7 @@ class UserController extends RestController
                         Rule::unique('users')->whereNull('deleted_at'),
                         'regex:/^(\+?\d{1,3}[-])\d{9,11}$/'
                     ],
-                    'image_url'     => 'required|image|max:10240',
+                    'image_url'     => 'image|max:10240',
                     'password'      => ['required','regex:/^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z]).{8,150}$/'],
                     'confirm_password' => 'required|same:password',
                     'device_type'  => 'in:web,android,ios',
