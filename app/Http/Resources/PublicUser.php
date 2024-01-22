@@ -20,7 +20,7 @@ class PublicUser extends JsonResource
            'name'             => $this->name,
            'slug'             => $this->slug,
            'mobile_no'        => $this->mobile_no,
-           'image_url'        => Storage::url($this->image_url),
+           'image_url'        => !empty($this->image_url) ? Storage::url($this->image_url) : \URL::to('images/user-placeholder.jpg'),
            'is_edit'          => !empty($this->is_edit) ? 1 : 0,
        ];
     }

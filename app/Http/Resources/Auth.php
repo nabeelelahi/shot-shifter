@@ -21,7 +21,7 @@ class Auth extends JsonResource
            'slug'             => $this->slug,
            'email'            => $this->email,
            'mobile_no'        => $this->mobile_no,
-           'image_url'        => Storage::url($this->image_url),
+           'image_url'        => !empty($this->image_url) ? Storage::url($this->image_url) : \URL::to('images/user-placeholder.jpg'),
            'status'           => $this->status,
            'is_email_verify'  => $this->is_email_verify,
            'is_mobile_verify' => $this->is_mobile_verify,
