@@ -94,9 +94,9 @@ class Scene extends Model
         return $query;
     }
 
-    public static function reOrderRecords($json_data)
+    public static function reOrderRecords($json_data,$type = 'schedule')
     {
-        if( count($json_data) ){
+        if( count($json_data) && $type == 'schedule' ){
             $sort_order = 1;
             foreach($json_data as $scene){
                 if( $scene['title'] == 'unschedule' ){
@@ -110,7 +110,18 @@ class Scene extends Model
                 $sort_order++;
             }
             self::upsert($data,['id'],['shoot_sort_order','is_schedule']);
+        } else {
+            $sort_order = 1;
+            foreach($json_data as $scene){
+                $data[] = [
+                    'id' => $scene['id'],
+                    'sort_order' => $sort_order,
+                ];
+                $sort_order++;
+            }
+            self::upsert($data,['id'],['sort_order']);
         }
+        return true;
     }
 
     public static function getAllScenes($shot_list_id,$mode,$keyword=NULL)
@@ -127,7 +138,7 @@ class Scene extends Model
 
         if( $mode == 'story' ){
             $query->where('type','scene');
-            $query->orderBy('scene_no','asc');
+            $query->orderBy('sort_order','asc');
         }
         if( $mode == 'schedule' ){
             $query->orderBy('shoot_sort_order','asc');

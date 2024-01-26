@@ -209,6 +209,7 @@ class SceneController extends RestController
     {
         $request   = $this->__request;
         $param_rule['json_data'] = 'required';
+        $param_rule['type']      = 'required|in:story,schedule';
 
         $response = $this->__validateRequestParams($request->all(),$param_rule);
         if( $this->__is_error )
@@ -216,15 +217,19 @@ class SceneController extends RestController
 
         $json_data = $request['json_data'];
         //reorder scene
-        Scene::reOrderRecords($json_data);
+        Scene::reOrderRecords($json_data,$request['type']);
 
         //get updated scenes
-        $records = Scene::getAllScenes($json_data[0]['shot_list_id'],'schedule');
+        $records = Scene::getAllScenes($json_data[0]['shot_list_id'],$request['type']);
         //sort scene
-        $scenes = Scene::sortScenes($records,'schedule');
+        if( $request['type'] == 'schedule' ){
+            $scenes = Scene::sortScenes($records,$request['type']);
+            $this->__collection = false;
+        } else {
+            $scenes = $records;
+        }
 
         $this->__is_paginate = false;
-        $this->__collection = false;
         return $this->__sendResponse($scenes,200,__('app.success_listing_message'));
     }
 

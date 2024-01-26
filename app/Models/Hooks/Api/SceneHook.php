@@ -42,7 +42,7 @@ class SceneHook
 
         if( !empty($request['mode']) ){
             if( $request['mode'] == 'story' ){
-                $query->orderBy('id','desc');
+                $query->orderBy('sort_order','asc');
             } else {
                 $query->orderBy('shoot_sort_order','asc');
             }
@@ -83,7 +83,7 @@ class SceneHook
 
         $postdata['scene_no']    = $scene_no;
         $postdata['is_schedule'] = $request['type'] == 'scene' ? '0' : '1';
-        $postdata['sort_order']  = $request['type'] != 'scene' ? ($getSortorder->sort_order + 1) : 0;
+        $postdata['sort_order']  = $request['type'] == 'scene' ? ($getSortorder->sort_order + 1) : 0;
         $postdata['shoot_sort_order'] = $request['type'] != 'scene' ? ($getSortorder->shoot_sort_order + 1) : 0;
         $postdata['user_id']    = $request['user']->id;
         $postdata['slug']       = time() . uniqid();
