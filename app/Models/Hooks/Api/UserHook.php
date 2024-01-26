@@ -63,20 +63,11 @@ class UserHook
     */
     public function hook_before_add($request,&$postdata)
     {
-        //delete un-verified account
-        if( env('VERIFICATION_TYPE') != 'none'){
-            if( env('VERIFICATION_TYPE') == 'email'){
-                $this->_model::where('email',$postdata['email'])->forceDelete();
-            }
-            if( env('VERIFICATION_TYPE') == 'mobile'){
-                $this->_model::where('mobile_no',$postdata['mobile_no'])->forceDelete();
-            }
-        }
-
         //set data
         if( !empty($postdata['image_url']) ){
             $postdata['image_url'] = CustomHelper::uploadMedia('users',$postdata['image_url']);
         }
+        $postdata['email_otp']     = rand(1111,9999);
         $postdata['user_group_id'] = 1;
         $postdata['username']   = $this->_model::generateUniqueUserName($postdata['name']);
         $postdata['slug']       = $postdata['username'];
@@ -112,9 +103,9 @@ class UserHook
                 'created_at'    => Carbon::now()
             ]);
         //send verification email
-        if( env('VERIFICATION_TYPE') == 'email' ){
+        if( env('MAIL_SANDBOX',1) == 0 ){
             $mail_params['USERNAME'] = $record->name;
-            $mail_params['LINK']     = route('verifyEmail',['name' => encrypt($record->email)]);
+            $mail_params['OTP']      = $record->email_otp;
             $mail_params['YEAR']     = date('Y');
             $mail_params['APP_NAME'] = env('APP_NAME');
             CustomHelper::sendMail($record->email,'user_registration',$mail_params);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\CustomHelper;
 use App\Libraries\Sms\Sms;
 use App\Models\User;
 use App\Models\UserApiToken;
@@ -104,20 +105,20 @@ class UserController extends RestController
     public function beforeStoreLoadModel($request)
     {
 
-        if( env('VERIFICATION_TYPE') == 'mobile' ) {
-            if( env('SMS_SANDBOX',1) != 1){
-                $sms = new Sms;
-                $response = $sms->getInstance()->sendVerificationCode($request['mobile_no']);
-                if( $response['code'] != 200 ){
-                    $this->__is_error = true;
-                    return $this->__sendError(__('app.validation_msg'),['message' => __('app.invalid_mobile_no') ],400);
-                } else {
-                    if( env('SMS_DRIVER') == 'TeleSign' ){
-                        $request->merge(['mobile_otp' => $response['data']->verification_code ]);
-                    }
-                }
-            }
-        }
+        // if( env('VERIFICATION_TYPE') == 'mobile' ) {
+        //     if( env('SMS_SANDBOX',1) != 1){
+        //         $sms = new Sms;
+        //         $response = $sms->getInstance()->sendVerificationCode($request['mobile_no']);
+        //         if( $response['code'] != 200 ){
+        //             $this->__is_error = true;
+        //             return $this->__sendError(__('app.validation_msg'),['message' => __('app.invalid_mobile_no') ],400);
+        //         } else {
+        //             if( env('SMS_DRIVER') == 'TeleSign' ){
+        //                 $request->merge(['mobile_otp' => $response['data']->verification_code ]);
+        //             }
+        //         }
+        //     }
+        // }
     }
 
     /**
@@ -200,19 +201,14 @@ class UserController extends RestController
         if( $this->__is_error )
             return $response;
 
-        if( env('SMS_SANDBOX',1) != 1){
-            $sms = new Sms;
-            $response = $sms->getInstance()->checkVerification($request['code'],$request['user']->mobile_no);
-            if( $response['code'] != 200 ){
-                $this->__is_error = true;
-                return $this->__sendError(__('app.validation_msg'),['message' => $response['message'] ],400);
-            }
+        if( $request['code'] != $request['user']->email_otp ){
+            return $this->__sendError('Validation Message',['message' => 'OTP is not valid'],400);
         }
 
         User::updateUser($request['user']->id,
-            [ 'is_mobile_verify' => 1 ,
-              'mobile_verify_at' => Carbon::now(),
-              'mobile_otp' => NULL] );
+            [ 'is_email_verify' => '1' ,
+              'email_verify_at' => Carbon::now(),
+              'email_otp' => NULL] );
 
         //get updated token record
         $user = User::getUserByApiToken($request['api_token']);
@@ -226,18 +222,17 @@ class UserController extends RestController
     public function resendCode()
     {
         $request = $this->__request;
-        if( env('SMS_SANDBOX',1) != 1){
-            $sms = new Sms;
-            $response = $sms->getInstance()->sendVerificationCode($request['user']->mobile_no);
-            if( $response['code'] != 200 ){
-                $this->__is_error = true;
-                return $this->__sendError(__('app.validation_msg'),['message' => __('app.invalid_mobile_no') ],400);
-            }else{
-                if( env('SMS_DRIVER') == 'TeleSign' ){
-                    User::where('id',$request['user']->id)->update(['mobile_otp' => $response['data']->verification_code ]);
-                }
-            }
+        $otp     = rand(1111,9999);
+        //send otp email
+        if( env('MAIL_SANDBOX',1) == 0 ){
+            $mail_params['USERNAME'] = $request['user']->name;
+            $mail_params['OTP']      = $otp;
+            $mail_params['YEAR']     = date('Y');
+            $mail_params['APP_NAME'] = env('APP_NAME');
+            CustomHelper::sendMail($request['user']->email,'resend_otp',$mail_params);
         }
+
+        User::where('id',$request['user']->id)->update(['email_otp' => $otp]);
 
         $this->__is_paginate   = false;
         $this->__is_collection = false;

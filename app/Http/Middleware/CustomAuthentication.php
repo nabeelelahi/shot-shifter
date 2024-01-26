@@ -108,29 +108,12 @@ class CustomAuthentication
                 'data'    => [ 'auth' => __('app.authorize_header_invalid') ]
             ],401);
         }
-        $check_api_token  = UserApiToken::generateApiToken($user->id,$this->request->ip(),$this->request->header('token'),$user->created_at);
-        // if( $check_api_token != $api_token ){
-        //     return response()->json([
-        //         'code'    => 401,
-        //         'message' => 'Unauthorized',
-        //         'data'    => [ 'auth' => __('app.authorize_header_invalid') ]
-        //     ],401);
-        // }
         if( $user->status != 1 ){
             return response()->json([
                 'code'    => 401,
                 'message' => 'Unauthorized',
                 'data'    => [ 'auth' => __('app.user_account_disabled') ]
             ],401);
-        }
-        if( env('VERIFICATION_TYPE') == 'email' ){
-            if($user->is_email_verify != 1 ){
-                return response()->json([
-                    'code'    => 401,
-                    'message' => 'Unauthorized',
-                    'data'    => [ 'auth' => __('app.email_not_verified') ]
-                ],401);
-            }
         }
         $this->request['api_token'] = $api_token;
         $this->request['user'] = $user;
