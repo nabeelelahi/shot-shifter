@@ -107,23 +107,26 @@ class SceneHook
             ];
             file_put_contents(public_path($record->shot_list_id . '_scene_no.json'),json_encode($data));
         }
-        array_push($scene_data,[
-            'id'         => $record->id,
-            'sort_order' => $request['new_sort_order'],
-        ]);
-        $getScenes = $this->getScenesBySortOrder($request['shot_list_id'],$request['new_sort_order']);
-        if( count($getScenes) ) {
-            foreach($getScenes as $scene){
-                if( $scene->id != $record->id ){
-                    array_push($scene_data,[
-                        'id' => $scene->id,
-                        'sort_order' => ($scene->sort_order + 1),
-                    ]);
-                }
 
+        if( !empty($request['new_sort_order']) ){
+            array_push($scene_data,[
+                'id'         => $record->id,
+                'sort_order' => $request['new_sort_order'],
+            ]);
+            $getScenes = $this->getScenesBySortOrder($request['shot_list_id'],$request['new_sort_order']);
+            if( count($getScenes) ) {
+                foreach($getScenes as $scene){
+                    if( $scene->id != $record->id ){
+                        array_push($scene_data,[
+                            'id' => $scene->id,
+                            'sort_order' => ($scene->sort_order + 1),
+                        ]);
+                    }
+
+                }
             }
+            $this->_model::upsert($scene_data,['id'],['sort_order']);
         }
-        $this->_model::upsert($scene_data,['id'],['sort_order']);
     }
 
     /*
