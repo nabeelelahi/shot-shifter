@@ -201,8 +201,10 @@ class UserController extends RestController
         if( $this->__is_error )
             return $response;
 
-        if( $request['code'] != $request['user']->email_otp ){
-            return $this->__sendError('Validation Message',['message' => 'OTP is not valid'],400);
+        if( env('MAIL_SANDBOX') == 0 ){
+            if( $request['code'] != $request['user']->email_otp ){
+                return $this->__sendError('Validation Message',['message' => 'OTP is not valid'],400);
+            }
         }
 
         User::updateUser($request['user']->id,
