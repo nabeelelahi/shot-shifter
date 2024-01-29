@@ -99,6 +99,7 @@ class SceneHook
     */
     public function hook_after_add($request,$record)
     {
+        $scene_data = [];
         if( $request['type'] == 'scene' ){
             \DB::table('shot_list')->where('id',$record->shot_list_id)->increment('total_scene',1);
             $data = [
@@ -106,6 +107,23 @@ class SceneHook
             ];
             file_put_contents(public_path($record->shot_list_id . '_scene_no.json'),json_encode($data));
         }
+        array_push($scene_data,[
+            'id'         => $record->id,
+            'sort_order' => $request['new_sort_order'],
+        ]);
+        $getScenes = $this->getScenesBySortOrder($request['shot_list_id'],$request['new_sort_order']);
+        if( count($getScenes) ) {
+            foreach($getScenes as $scene){
+                if( $scene->id != $record->id ){
+                    array_push($scene_data,[
+                        'id' => $scene->id,
+                        'sort_order' => ($scene->sort_order + 1),
+                    ]);
+                }
+
+            }
+        }
+        $this->_model::upsert($scene_data,['id'],['sort_order']);
     }
 
     /*
@@ -180,6 +198,14 @@ class SceneHook
         //         }
         //     }
         // }
+    }
+
+    public function getScenesBySortOrder($shot_list_id,$sort_order)
+    {
+        $query = $this->_model::where('shot_list_id',$shot_list_id)
+                                ->where('sort_order','>=',$sort_order)
+                                ->get();
+        return $query;
     }
 
     public function create_cache_signature($request)
