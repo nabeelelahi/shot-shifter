@@ -64,7 +64,7 @@ All notable changes to `ignition` will be documented in this file
 
 ## 2.11.4 - 2021-08-16
 
-- use npm ci instead of install (#411)
+<!-- - use npm ci instead of install (#411) -->
 
 ## 2.11.3 - 2021-08-16
 
