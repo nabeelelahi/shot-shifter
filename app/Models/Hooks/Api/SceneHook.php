@@ -76,8 +76,9 @@ class SceneHook
             if( empty($getSortorder->total_scene) ){
                 $scene_no = ($getSortorder->total_scene + 1);
             } else {
-                $data     = json_decode(file_get_contents(public_path($request->shot_list_id . '_scene_no.json')),true);
-                $scene_no = ($data['last_scene_no'] + 1);
+                // $data     = json_decode(file_get_contents(public_path($request->shot_list_id . '_scene_no.json')),true);
+                // $scene_no = ($data['last_scene_no'] + 1);
+                $scene_no = 1;
             }
         }
 
