@@ -109,7 +109,7 @@ class SceneHook
             $data = [
                 'last_scene_no' => $record->scene_no
             ];
-            file_put_contents(public_path($record->shot_list_id . '_scene_no.json'),json_encode($data));
+            // file_put_contents(public_path($record->shot_list_id . '_scene_no.json'),json_encode($data));
         }
 
         if( !empty($request['new_sort_order']) ){
