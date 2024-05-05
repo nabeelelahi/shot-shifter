@@ -30,9 +30,11 @@ class ShotListHook
         if( $slug == NULL )
         {
             $query->selectRaw('IF(sup.id IS NOT NULL,1,0) AS is_user_pin');
-            $query->leftJoin('shotlist_user_pin AS sup',function($leftJoin) use ($request){
-                $leftJoin->on('sup.shot_list_id','=','shot_list.id')
-                         ->where('sup.user_id',$request['user']->id);
+            $query->leftJoin('shotlist_user_pin AS sup', function ($leftJoin) use ($request) {
+                $leftJoin->on('sup.shot_list_id', '=', 'shot_list.id');
+                if (isset($request['user']) && is_object($request['user']) && isset($request['user']->id)) {
+                    $leftJoin->where('sup.user_id', $request['user']->id);
+                }
             });
             if( !empty($request['keyword']) ){
                 $keyword = $request['keyword'];
@@ -47,7 +49,9 @@ class ShotListHook
                 $query->where('ums.target_id',$request['user']->id);
                 $query->whereNull('ums.deleted_at');
             } else {
-                $query->where('shot_list.user_id',$request['user']->id);
+                if (isset($request['user']) && is_object($request['user']) && !is_null($request['user']->id)) {
+                    $query->where('shot_list.user_id',$request['user']->id);
+                }
             }
 
             $query->orderByRaw("is_user_pin DESC, ID DESC");
@@ -68,7 +72,10 @@ class ShotListHook
         if( !empty($postdata['image_url']) ){
             $postdata['image_url'] = CustomHelper::uploadMedia('shot_list',$postdata['image_url']);
         }
-        $postdata['user_id'] = $request['user']->id;
+        // $postdata['user_id'] = $request['user']->id;
+        if (isset($request['user']) && is_object($request['user']) && isset($request['user']->id)) {
+            $postdata['user_id'] = $request['user']->id;
+        }
         $postdata['slug'] = time() . uniqid();
         $postdata['created_at'] = Carbon::now();
     }

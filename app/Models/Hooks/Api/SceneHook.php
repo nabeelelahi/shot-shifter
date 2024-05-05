@@ -85,7 +85,10 @@ class SceneHook
         $postdata['is_schedule'] = $request['type'] == 'scene' ? '0' : '1';
         $postdata['sort_order']  = $request['type'] == 'scene' ? ($getSortorder->sort_order + 1) : 0;
         $postdata['shoot_sort_order'] = $request['type'] != 'scene' ? ($getSortorder->shoot_sort_order + 1) : 0;
-        $postdata['user_id']    = $request['user']->id;
+        // $postdata['user_id']    = $request['user']->id;
+        if (isset($request['user']) && is_object($request['user']) && isset($request['user']->id)) {
+            $postdata['user_id'] = $request['user']->id;
+        }
         $postdata['slug']       = time() . uniqid();
         $postdata['created_at'] = Carbon::now();
     }

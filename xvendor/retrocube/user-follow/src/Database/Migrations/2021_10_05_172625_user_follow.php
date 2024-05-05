@@ -1,13 +1,13 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\s\;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UserFollow extends Migration
+class UserFollow extends 
 {
     /**
-     * Run the migrations.
+     * Run the s.
      *
      * @return void
      */
@@ -27,7 +27,7 @@ class UserFollow extends Migration
     }
 
     /**
-     * Reverse the migrations.
+     * Reverse the s.
      *
      * @return void
      */

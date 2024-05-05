@@ -42,7 +42,7 @@ class CreateScenesTable extends Migration
             $table->string('camera',150)->nullable();
             $table->enum('is_complete',['1','0'])->default('0');
             $table->integer('sort_order')->nullable();
-            $table->integet('shoot_sort_order')->nullable();
+            $table->integer('shoot_sort_order')->nullable();
             $table->integer('scene_no')->nullable();
             $table->enum('is_schedule',['1','0'])->default('0');
             $table->enum('status',['1','0'])->default('1');
