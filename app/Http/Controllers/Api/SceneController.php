@@ -162,25 +162,25 @@ class SceneController extends RestController
 
     }
 
-    // public function index()
-    // {
-    //     $request = $this->__request;
-    //     $param_rule['mode']         = 'required|in:story,schedule';
-    //     $param_rule['shot_list_id'] = 'required|exists:shot_list,id';
+    public function index()
+    {
+        $request = $this->__request;
+        $param_rule['mode']         = 'required|in:story,schedule';
+        $param_rule['shot_list_id'] = 'required|exists:shot_list,id';
 
-    //     $response = $this->__validateRequestParams($request->all(),$param_rule);
-    //     if( $this->__is_error )
-    //         return $response;
+        $response = $this->__validateRequestParams($request->all(),$param_rule);
+        if( $this->__is_error )
+            return $response;
 
-    //     $keyword = !empty($request['keyword']) ? $request['keyword'] : NULL;
-    //     $records = Scene::getAllScenes($request['shot_list_id'],$request['mode'],$keyword);
+        $keyword = !empty($request['keyword']) ? $request['keyword'] : NULL;
+        $records = Scene::getAllScenes($request['shot_list_id'],$request['mode'],$keyword);
 
-    //     $scenes = Scene::sortScenes($records,$request['mode']);
+        $scenes = Scene::sortScenes($records,$request['mode']);
 
-    //     $this->__is_paginate = false;
-    //     $this->__collection = false;
-    //     return $this->__sendResponse($scenes,200,__('app.success_listing_message'));
-    // }
+        $this->__is_paginate = false;
+        $this->__collection = false;
+        return $this->__sendResponse($scenes,200,__('app.success_listing_message'));
+    }
 
     public function sceneComplete()
     {
