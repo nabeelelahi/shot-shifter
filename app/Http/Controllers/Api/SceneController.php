@@ -335,4 +335,32 @@ class SceneController extends RestController
         $this->__collection = false;
         return $this->__sendResponse($scenes,200,'Records have been reset sucessfully');
     }
+    public function UpdateAllScene(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'scenes.*.id' => 'required|exists:scenes,id',
+            // Add validation rules for other fields if needed
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+
+        // Extract scenes data from the request
+        $scenes = $request->input('scenes');
+
+        try {
+                // Update scenes in bulk
+            Scene::UpdateAllScenes($scenes);
+            
+            // Retrieve the updated scenes after the bulk update
+            $updatedScenes = Scene::whereIn('id', array_column($scenes, 'id'))->get();
+
+            // Return the updated scenes data in the response
+            return response()->json(['message' => 'Scenes updated successfully', 'data' => $updatedScenes], 200);
+        } catch (\Exception $e) {
+            // Handle any exceptions that occur during bulk update
+            return response()->json(['message' => 'Failed to update scenes', 'error' => $e->getMessage()], 500);
+        }
+    }
 }
