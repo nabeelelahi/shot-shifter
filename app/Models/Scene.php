@@ -252,4 +252,50 @@ class Scene extends Model
 
         return true;
     }
+
+    public static function UpdateAllScenes($scenes)
+    {
+        foreach ($scenes as $sceneData) {
+            $scene = self::find($sceneData['id']);
+            if ($scene) {
+                // Update the fields
+                $scene->type = $sceneData['type'] ?? $scene->type;
+                $scene->shot_list_id = $sceneData['shot_list_id'] ?? $scene->shot_list_id;
+                $scene->size = $sceneData['size'] ?? $scene->size;
+                $scene->title = $sceneData['title'] ?? $scene->title;
+                $scene->slug = $sceneData['slug'] ?? $scene->slug;
+                $scene->image_url = $sceneData['image_url'] ?? $scene->image_url;
+                $scene->description = $sceneData['description'] ?? $scene->description;
+                $scene->date = $sceneData['date'] ?? $scene->date;
+                $scene->sub_heading = $sceneData['sub_heading'] ?? $scene->sub_heading;
+                $scene->angle = $sceneData['angle'] ?? $scene->angle;
+                $scene->lens = $sceneData['lens'] ?? $scene->lens;
+                $scene->internal_external = $sceneData['internal_external'] ?? $scene->internal_external;
+                $scene->sun_time = $sceneData['sun_time'] ?? $scene->sun_time;
+                $scene->location = $sceneData['location'] ?? $scene->location;
+                $scene->location_pin = $sceneData['location_pin'] ?? $scene->location_pin;
+                $scene->cast = $sceneData['cast'] ?? $scene->cast;
+                $scene->wardrobe = $sceneData['wardrobe'] ?? $scene->wardrobe;
+                $scene->props = $sceneData['props'] ?? $scene->props;
+                $scene->action = $sceneData['action'] ?? $scene->action;
+                $scene->speed = $sceneData['speed'] ?? $scene->speed;
+                $scene->sound = $sceneData['sound'] ?? $scene->sound;
+                $scene->timepicker = $sceneData['timepicker'] ?? $scene->timepicker;
+                $scene->lines_dialogue_english = $sceneData['lines_dialogue_english'] ?? $scene->lines_dialogue_english;
+                $scene->lines_dialogue_foreign = $sceneData['lines_dialogue_foreign'] ?? $scene->lines_dialogue_foreign;
+                $scene->camera = $sceneData['camera'] ?? $scene->camera;
+                $scene->grip = $sceneData['grip'] ?? $scene->grip;
+                $scene->is_complete = $sceneData['is_complete'] ?? $scene->is_complete;
+                $scene->sort_order = $sceneData['sort_order'] ?? $scene->sort_order;
+                $scene->shoot_sort_order = $sceneData['shoot_sort_order'] ?? $scene->shoot_sort_order;
+                $scene->scene_no = $sceneData['scene_no'] ?? $scene->scene_no;
+                $scene->is_schedule = $sceneData['is_schedule'] ?? $scene->is_schedule;
+                $scene->status = $sceneData['status'] ?? $scene->status;
+                
+                $scene->save();
+            }
+        }
+    }
+
+
 }
