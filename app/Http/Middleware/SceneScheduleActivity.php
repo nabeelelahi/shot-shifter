@@ -37,6 +37,7 @@ class SceneScheduleActivity
                     ScheduleActivity::sceneCreateActivity($request,$response);
                 }
                 if( $route_name == 'scene.update' ){
+                    
                     ScheduleActivity::sceneUpdateActivity($request,$response,$old_record);
                 }
                 if( $route_name == 'scene.destroy' ){
@@ -47,6 +48,10 @@ class SceneScheduleActivity
                 }
                 if($route_name == 'scene.reorder'){
                     ScheduleActivity::sceneReOrderActivity($request,$response);
+                }
+                if($route_name == 'scene.bulkupdate'){
+                    $scenes = $request->input('scenes'); // Assuming 'scenes' is an array of scenes
+                    ScheduleActivity::bulkUpdateScenesActivity($request,$response);
                 }
             }
         } catch ( \Exception $e ){
