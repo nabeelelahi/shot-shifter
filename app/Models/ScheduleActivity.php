@@ -92,6 +92,36 @@ class ScheduleActivity extends Model
         }
         return true;
     }
+    public static function bulkUpdateScenesActivity($request, $scenes)
+    {
+        $user_id = $request['user']->id;
+        $method = $request->method();
+        $action_name = Route::currentRouteName();
+        $now = Carbon::now();
+
+        $activities = [];
+        foreach ($scenes as $scene) {
+            // Check if the scene type is not 'scene' before inserting activity
+            if ($scene->type != 'scene') {
+                $activity = [
+                    'user_id' => $user_id,
+                    'scene_id' => $scene->id,
+                    'shot_list_id' => $scene->shot_list_id,
+                    'http_verb' => $method,
+                    'action_name' => $action_name,
+                    'request_payload' => json_encode($request->all()),
+                    'response' => json_encode($scene),
+                    'created_at' => $now,
+                ];
+                $activities[] = $activity;
+            }
+        }
+
+        // Insert activities in bulk
+        ScheduleActivity::insert($activities);
+
+        return true;
+    }
 
     public static function sceneDeleteActivity($request,$response)
     {
